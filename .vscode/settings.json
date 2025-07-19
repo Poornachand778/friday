@@ -1,0 +1,6 @@
+{
+    "python.formatting.provider": "black",
+    "python.defaultInterpreterPath": "${workspaceFolder}/env/bin/python",
+    "editor.formatOnSave": true
+  }
+  

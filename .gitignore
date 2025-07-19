@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+.ipynb_checkpoints/
+*.py[cod]
+.env
+# Conda
+env/
+.conda/
+# Models & huge data handled by Git LFS
+models/
+data/**/*.gguf
+data/**/*.bin
