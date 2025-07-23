@@ -72,3 +72,30 @@ pip install -r requirements.txt
 
 ## License
 This project is for personal use and Telugu film industry applications. 
+
+# Download gguf model:
+brew install aria2c
+
+mkdir -p models/gguf
+cd models/gguf
+# quickest, resumable download
+aria2c -x 8 \
+  https://huggingface.co/QuantFactory/Meta-Llama-3-8B-Instruct-GGUF/resolve/main/Meta-Llama-3-8B-Instruct.Q4_0.gguf
+cd ../../         # back to repo root
+
+
+# installed sentencepiece , sentence transformers through conda and it worked fine, changed the gguf filename manually to Meta-Llama-3-8B-Instruct.Q4_0.gguf  , 
+
+# This syntax of running server worked. 
+
+# wrong method:   
+--n-gpu-layers -1 \
+  --chat-format chatml \
+
+# Right method:
+
+python -m llama_cpp.server \
+  --model models/gguf/Meta-Llama-3-8B-Instruct.Q4_0.gguf \
+  --n_gpu_layers -1 \
+  --chat_format chatml \
+  --port 8000
