@@ -1,27 +1,45 @@
-from utils.md_parser import split_scenes
+#!/usr/bin/env python
+"""
+Split the master screenplay markdown into individual scene files (json blobs).
 
-import re, pathlib, json, tqdm
+Usage:
+    poetry run python scripts/clean/split_scenes.py
+"""
 
-SOURCE = pathlib.Path("data/film/scripts/aa_janta_naduma_draft.md")
-OUTDIR = pathlib.Path("data/clean_chunks/film")
-OUTDIR.mkdir(parents=True, exist_ok=True)
+from pathlib import Path
+import json
+import re
+from scripts.utils.md_parser import split_scenes
 
-text = SOURCE.read_text("utf-8")
+SOURCE = Path("data/film/scripts/aa_janta_naduma_draft.md")
+OUTROOT = Path("data/clean_chunks/film/scenes")
+OUTROOT.mkdir(parents=True, exist_ok=True)
 
-# 1) simple split on 'Scene', 'Scene :' or angle-bracket scene markers
-scene_regex = re.compile(r"(?:^|\n)(?:<\s*Scene.*?>|Scene\s*\d+)", re.IGNORECASE)
-scenes = scene_regex.split(text)
-scenes = [s.strip() for s in scenes if s.strip()]
 
-for idx, scene in enumerate(scenes):
-    # tag profanity: crude check
-    has_swear = bool(re.search(r"\b(fuck|douche|shit)\b", scene, re.I))
-    meta = {
-        "scene_id": idx,
-        "contains_profanity": has_swear,
-        "lang": "en+te",
-        "source": "aa_janta_naduma",
-    }
-    (OUTDIR / f"scene_{idx:03d}.json").write_text(
-        json.dumps({"meta": meta, "text": scene}, ensure_ascii=False)
+def flag_profanity(text: str) -> bool:
+    """Very crude swear detector."""
+    return bool(re.search(r"\b(fuck|douche|shit)\b", text, re.I))
+
+
+def main() -> None:
+    md_text = SOURCE.read_text(encoding="utf-8")
+    blocks = split_scenes(md_text)  # <- new helper
+    for idx, block in enumerate(blocks, start=1):
+        meta = {
+            "scene_id": idx,
+            "contains_profanity": flag_profanity(block),
+            "lang": "en+te",
+            "source": "aa_janta_naduma",
+        }
+        out_path = OUTROOT / f"scene_{idx:03d}.json"
+        out_path.write_text(
+            json.dumps({"meta": meta, "text": block}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    print(
+        f"✅  Wrote {len(blocks)} scenes to {OUTROOT.resolve().relative_to(Path.cwd())}"
     )
+
+
+if __name__ == "__main__":
+    main()

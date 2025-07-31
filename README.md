@@ -86,6 +86,8 @@ cd ../../         # back to repo root
 
 # installed sentencepiece , sentence transformers through conda and it worked fine, changed the gguf filename manually to Meta-Llama-3-8B-Instruct.Q4_0.gguf  , 
 
+conda install -c conda-forge transformers=4.41.0 accelerate=0.29.3 safetensors datasets peft sentencepiece && pip install bitsandbytes
+
 # This syntax of running server worked. 
 
 # wrong method:   
@@ -99,3 +101,5 @@ python -m llama_cpp.server \
   --n_gpu_layers -1 \
   --chat_format chatml \
   --port 8000
+
+  
