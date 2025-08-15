@@ -1,12 +1,73 @@
 # Python
 __pycache__/
-.ipynb_checkpoints/
 *.py[cod]
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Environment & Config
 .env
+.env.local
+.env.production
+.env.staging
+*.local
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
 # Conda
 env/
 .conda/
-# Models & huge data handled by Git LFS
+
+# AWS
+.aws/
+
+# Models & Large Files (Git LFS)
 models/
-data/**/*.gguf
-data/**/*.bin
+*.gguf
+*.bin
+*.safetensors
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+.env
+.env.*
