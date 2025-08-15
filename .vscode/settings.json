@@ -4,5 +4,21 @@
   "editor.formatOnSave": true,
   "python-envs.defaultEnvManager": "ms-python.python:conda",
   "python-envs.defaultPackageManager": "ms-python.python:conda",
-  "python-envs.pythonProjects": []
+  "python-envs.pythonProjects": [],
+  
+  // AWS & SageMaker Configuration
+  "aws.profile": "default",
+  "aws.region": "us-east-1",
+  "jupyter.jupyterServerType": "local",
+  
+  // SageMaker specific settings
+  "aws.sagemaker.defaultS3Bucket": "friday-ai-training",
+  
+  // Environment variables
+  "python.terminal.activateEnvironment": true,
+  "python.envFile": "${workspaceFolder}/.env",
+  
+  // Auto-save for better workflow
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000
 }
