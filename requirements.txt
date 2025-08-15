@@ -1,0 +1,25 @@
+# VS Code SageMaker Development Requirements
+# Core AWS & SageMaker
+boto3>=1.34.0
+sagemaker>=2.189.0
+awscli>=2.13.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# ML Libraries (for local development)
+torch>=2.0.0
+transformers>=4.36.0
+peft>=0.7.0
+datasets>=2.14.0
+accelerate>=0.24.0
+
+# Development tools
+jupyter>=1.0.0
+ipykernel>=6.25.0
+black>=23.0.0
+pytest>=7.4.0
+
+# Optional: Local model testing
+llama-cpp-python>=0.2.0
+bitsandbytes>=0.41.0
