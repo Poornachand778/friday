@@ -59,6 +59,7 @@ models/
 *.gguf
 *.bin
 *.safetensors
+*.tar.gz
 
 # Logs
 *.log
