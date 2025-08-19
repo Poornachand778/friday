@@ -48,7 +48,7 @@ def print_trainable_summary(model):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(
         f"🧮 Trainable params: {trainable:,} / {total:,} "
-        f"({100*trainable/total:.4f}%)"
+        f"({100 * trainable / total:.4f}%)"
     )
 
 
@@ -96,15 +96,15 @@ class CausalLMCollator:
 
         # CRITICAL CHECK: If all labels are -100, training will fail
         if total_non_masked == 0:
-            print(f"🚨 CRITICAL ERROR: ALL LABELS ARE MASKED (-100)!")
+            print("🚨 CRITICAL ERROR: ALL LABELS ARE MASKED (-100)!")
             print(f"   Total tokens in batch: {total_tokens}")
             print(f"   Non-masked tokens: {total_non_masked}")
-            print(f"   This means no assistant tokens to learn from!")
+            print("   This means no assistant tokens to learn from!")
             print(f"   Sample labels: {labels[0][:20] if labels else 'None'}")
             raise ValueError("All labels are -100. No tokens to learn from!")
 
         print(
-            f"✅ Batch validation: {total_non_masked}/{total_tokens} tokens for training ({total_non_masked/total_tokens:.1%})"
+            f"✅ Batch validation: {total_non_masked}/{total_tokens} tokens for training ({total_non_masked / total_tokens:.1%})"
         )
 
         return {
@@ -434,7 +434,7 @@ def main():
     lens = [len(r) for r in train_dataset["input_ids"][:50]]
     if lens:
         print(
-            f"📏 Chat length stats (first 50): min={min(lens)}, max={max(lens)}, avg={sum(lens)/len(lens):.1f}"
+            f"📏 Chat length stats (first 50): min={min(lens)}, max={max(lens)}, avg={sum(lens) / len(lens):.1f}"
         )
     assist_tokens = (
         len([x for x in train_dataset[0]["labels"] if x != -100])
@@ -467,7 +467,7 @@ def main():
 
             else:
                 print(
-                    f"✅ Example {i}: {example_assistant}/{example_tokens} assistant tokens ({example_assistant/example_tokens:.1%})"
+                    f"✅ Example {i}: {example_assistant}/{example_tokens} assistant tokens ({example_assistant / example_tokens:.1%})"
                 )
 
         if examples_with_no_assistant:
@@ -475,11 +475,11 @@ def main():
                 f"� CRITICAL ERROR: {len(examples_with_no_assistant)} examples have NO ASSISTANT TOKENS!"
             )
             print(f"   Examples with all-masked labels: {examples_with_no_assistant}")
-            print(f"   This will cause 'no grad' error during training!")
+            print("   This will cause 'no grad' error during training!")
             raise ValueError(f"{name} dataset has examples with all labels = -100")
 
         print(
-            f"✅ {name} validation: {total_assistant_tokens}/{total_tokens} total assistant tokens ({total_assistant_tokens/total_tokens:.1%})"
+            f"✅ {name} validation: {total_assistant_tokens}/{total_tokens} total assistant tokens ({total_assistant_tokens / total_tokens:.1%})"
         )
 
         if total_assistant_tokens == 0:
@@ -495,19 +495,19 @@ def main():
         valid_dataset, "VALIDATION"
     )
 
-    print(f"📊 Dataset Summary:")
+    print("📊 Dataset Summary:")
     print(
-        f"   Training: {train_assist:,} assistant tokens / {train_total:,} total ({train_assist/train_total:.2%})"
+        f"   Training: {train_assist:,} assistant tokens / {train_total:,} total ({train_assist / train_total:.2%})"
     )
     print(
-        f"   Validation: {valid_assist:,} assistant tokens / {valid_total:,} total ({valid_assist/valid_total:.2%})"
+        f"   Validation: {valid_assist:,} assistant tokens / {valid_total:,} total ({valid_assist / valid_total:.2%})"
     )
 
     if train_assist / train_total < 0.01:  # Less than 1% assistant tokens
         print(
-            f"⚠️ WARNING: Very low assistant token ratio ({train_assist/train_total:.2%})"
+            f"⚠️ WARNING: Very low assistant token ratio ({train_assist / train_total:.2%})"
         )
-        print(f"   This might indicate chat template issues!")
+        print("   This might indicate chat template issues!")
 
     print("✅ Comprehensive label validation passed")
 
