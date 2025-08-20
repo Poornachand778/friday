@@ -9,7 +9,7 @@ Output → data/instructions/snippets_chatml.jsonl
 
 from pathlib import Path
 import json
-from scripts.utils.md_parser import parse_snippets
+from utils.md_parser import parse_snippets
 
 SRC = Path("data/film/snippets/unplaced_dialogues.md")
 DEST = Path("data/instructions/snippets_chatml.jsonl")
