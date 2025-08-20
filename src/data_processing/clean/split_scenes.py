@@ -9,7 +9,7 @@ Usage:
 from pathlib import Path
 import json
 import re
-from scripts.utils.md_parser import split_scenes
+from utils.md_parser import split_scenes
 
 SOURCE = Path("data/film/scripts/aa_janta_naduma_draft.md")
 OUTROOT = Path("data/clean_chunks/film/scenes")

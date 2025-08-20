@@ -48,14 +48,12 @@ class ModelPackager:
         """Validate all required model artifacts exist"""
         print("🔍 Validating model artifacts...")
 
-        # Check inference code
-        code_files = [
-            "deployment/code/inference.py",
-            "deployment/code/requirements.txt",
-        ]
+        # Check inference code under src/inference/sagemaker_code
+        code_dir = Path("src/inference/sagemaker_code")
+        code_files = [code_dir / "inference.py", code_dir / "requirements.txt"]
 
         for file_path in code_files:
-            if not os.path.exists(file_path):
+            if not file_path.exists():
                 print(f"❌ Missing code file: {file_path}")
                 return False
 
@@ -89,10 +87,12 @@ class ModelPackager:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         with tarfile.open(output_path, "w:gz") as tar:
-            # Add inference code
+            # Add inference code from src path
             print("   📝 Adding inference code...")
-            tar.add("deployment/code/inference.py", arcname="code/inference.py")
-            tar.add("deployment/code/requirements.txt", arcname="code/requirements.txt")
+            code_dir = Path("src/inference/sagemaker_code")
+            for file_path in code_dir.iterdir():
+                if file_path.is_file():
+                    tar.add(str(file_path), arcname=f"code/{file_path.name}")
 
             # Add LoRA adapters
             print("   🎭 Adding LoRA adapters...")
