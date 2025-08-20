@@ -356,7 +356,7 @@ class FridayEndpointDeployer:
                 ScalableDimension="sagemaker:variant:DesiredInstanceCount",
                 MinCapacity=1,
                 MaxCapacity=3,
-                RoleArn=f"arn:aws:iam::{boto3.client('sts').get_caller_identity()['Account']}:role/aws-service-role/sagemaker.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_SageMakerEndpoint",
+                RoleARN=f"arn:aws:iam::{boto3.client('sts').get_caller_identity()['Account']}:role/aws-service-role/sagemaker.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_SageMakerEndpoint",
             )
             print("✅ Scalable target registered")
         except ClientError as e:
