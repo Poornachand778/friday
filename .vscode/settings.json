@@ -7,7 +7,6 @@
   "python-envs.pythonProjects": [],
   
   // AWS & SageMaker Configuration
-  "aws.profile": "default",
   "aws.region": "us-east-1",
   "jupyter.jupyterServerType": "local",
   

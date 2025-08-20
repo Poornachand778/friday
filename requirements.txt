@@ -23,3 +23,5 @@ pytest>=7.4.0
 # Optional: Local model testing
 llama-cpp-python>=0.2.0
 bitsandbytes>=0.41.0
+
+gradio
