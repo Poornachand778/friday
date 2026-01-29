@@ -13,6 +13,26 @@ llm:
   max_tokens: 2048
   top_p: 0.95
 
+# GLM-4.7-Flash Router (Agentic Request Routing)
+# ===============================================
+# Uses GLM-4.7-Flash for intelligent routing decisions:
+# - Task classification (conversation, scene_query, etc.)
+# - Tool selection (which tools are needed)
+# - Context detection (writers_room, kitchen, etc.)
+# - Complexity assessment (simple/moderate/complex)
+router:
+  enabled: false                   # Set to true to enable GLM router
+  provider: zhipu                  # zhipu (Z.AI) or openai
+  model_name: glm-4.7-flash        # GLM-4.7-Flash for fast routing
+  api_key: ${ZHIPU_API_KEY}        # Set via environment variable
+  base_url: https://open.bigmodel.cn/api/paas/v4
+  timeout: 5.0                     # Keep routing fast
+  max_tokens: 256                  # Brief analysis only
+  temperature: 0.3                 # Deterministic routing
+  fallback_on_error: true          # Use keyword routing on failures
+  cache_decisions: true            # Cache similar request patterns
+  cache_ttl: 300                   # 5 minutes cache TTL
+
 external_apis:
   # Claude Vision for camera analysis (Kitchen/Storyboard)
   vision:
