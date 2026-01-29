@@ -44,22 +44,32 @@ class FridayEndpointDeployer:
         try:
             self.role = sagemaker.get_execution_role()
         except ValueError:
-            # Running outside SageMaker, get role from environment or create
-            role_name = os.getenv("SAGEMAKER_ROLE", "poornachandkeerthi")
-            try:
-                role_response = self.iam_client.get_role(RoleName=role_name)
-                self.role = role_response["Role"]["Arn"]
-            except ClientError:
+            # Running outside SageMaker, get role from environment
+            role_env = os.getenv("SAGEMAKER_ROLE")
+            if role_env:
+                # Check if it's already an ARN
+                if role_env.startswith("arn:aws:iam::"):
+                    self.role = role_env
+                else:
+                    # It's a role name, get the ARN
+                    try:
+                        role_response = self.iam_client.get_role(RoleName=role_env)
+                        self.role = role_response["Role"]["Arn"]
+                    except ClientError:
+                        raise ValueError(f"Could not find IAM role: {role_env}")
+            else:
                 # Fallback to a default execution role pattern
                 account_id = boto3.client("sts").get_caller_identity()["Account"]
-                self.role = f"arn:aws:iam::{account_id}:role/service-role/AmazonSageMaker-ExecutionRole-20250809T005200"
+                self.role = (
+                    f"arn:aws:iam::{account_id}:role/FridayAI-SageMaker-ExecutionRole"
+                )
 
         # S3 bucket for artifacts
         account_id = boto3.client("sts").get_caller_identity()["Account"]
         self.bucket = f"sagemaker-{region}-{account_id}"
 
-        # Instance configuration
-        self.instance_type = os.getenv("SAGEMAKER_INSTANCE_TYPE", "ml.g5.2xlarge")
+        # Instance configuration - use ml.g5.12xlarge (ml.g5.2xlarge has 0 quota)
+        self.instance_type = os.getenv("SAGEMAKER_INSTANCE_TYPE", "ml.g5.12xlarge")
 
         print("🚀 Friday AI Endpoint Deployer initialized")
         print(f"   Region: {self.region}")
@@ -88,8 +98,8 @@ class FridayEndpointDeployer:
                         arcname = f"code/{file_path.name}"
                         tar.add(file_path, arcname=arcname)
 
-            # Add model artifacts (LoRA adapters)
-            model_dir = Path("models/trained")
+            # Add model artifacts (LoRA adapters) - Use iteration3 subdirectory
+            model_dir = Path("models/trained/iteration4")
             if model_dir.exists():
                 for file_path in model_dir.glob("*.json"):  # Config files
                     tar.add(file_path, arcname=f"adapters/{file_path.name}")
@@ -426,8 +436,8 @@ class FridayEndpointDeployer:
                 print(f"❌ Missing required file: {file_path}")
                 return False
 
-        # Check model files (LoRA adapters)
-        model_dir = Path("models/trained")
+        # Check model files (LoRA adapters) - Use iteration3 subdirectory
+        model_dir = Path("models/trained/iteration3")
         required_patterns = ["*.json", "*.safetensors", "tokenizer*"]
 
         for pattern in required_patterns:
@@ -477,7 +487,8 @@ class FridayEndpointDeployer:
 def main():
     """Main deployment function"""
     deployer = FridayEndpointDeployer(
-        region=os.getenv("AWS_DEFAULT_REGION", "us-east-1"), endpoint_name="friday-rt"
+        region=os.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+        endpoint_name=os.getenv("SAGEMAKER_ENDPOINT_NAME", "friday-iter3"),
     )
 
     try:

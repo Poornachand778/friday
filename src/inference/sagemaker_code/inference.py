@@ -9,7 +9,7 @@ import os
 import json
 import threading
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from peft import PeftModel
@@ -110,7 +110,57 @@ def input_fn(body: str, content_type="application/json"):
         return data
     if isinstance(data, str):
         return {"inputs": data, "parameters": {}}
+    if isinstance(data, list):
+        return {"inputs": data, "parameters": {}}
     raise ValueError("Invalid payload")
+
+
+def _ensure_inputs(data: Dict[str, Any]) -> List[str]:
+    raw_inputs: Union[str, List[str]] = data.get("inputs") or ""
+    if isinstance(raw_inputs, str):
+        return [raw_inputs]
+    if isinstance(raw_inputs, list):
+        if not raw_inputs:
+            raise ValueError("Input list cannot be empty")
+        if not all(isinstance(x, str) for x in raw_inputs):
+            raise ValueError("All inputs must be strings")
+        return raw_inputs
+    raise ValueError("inputs must be a string or list of strings")
+
+
+def _prepare_chat_prompts(data: Dict[str, Any]) -> List[str]:
+    raw_messages = data.get("messages")
+    if not raw_messages:
+        return []
+
+    # Normalize to list of conversations
+    if (
+        isinstance(raw_messages, list)
+        and raw_messages
+        and isinstance(raw_messages[0], list)
+    ):
+        conversations = raw_messages
+    else:
+        conversations = [raw_messages]
+
+    prompts: List[str] = []
+    for conversation in conversations:
+        prepared: List[Dict[str, str]] = []
+        for message in conversation:
+            role = message.get("role", "user")
+            content = message.get("content") or ""
+            if role == "tool":
+                name = message.get("name", "tool")
+                content = f"[tool:{name}] {content}".strip()
+                role = "user"
+            prepared.append({"role": role, "content": content})
+        prompt_text = _TOKENIZER.apply_chat_template(
+            prepared,
+            add_generation_prompt=True,
+            tokenize=False,
+        )
+        prompts.append(prompt_text)
+    return prompts
 
 
 def predict_fn(data, context):
@@ -118,69 +168,114 @@ def predict_fn(data, context):
     # Ensure model is loaded
     _load_model_once(context["model_dir"])
 
-    text = data.get("inputs") or ""
+    prompts = _prepare_chat_prompts(data)
+    if not prompts:
+        prompts = _ensure_inputs(data)
     params = data.get("parameters") or {}
 
     # Get token limits from environment
     max_input_length = int(os.environ.get("MAX_INPUT_LENGTH", "4096"))
     max_total_tokens = int(os.environ.get("MAX_TOTAL_TOKENS", "8192"))
 
-    # Tokenize and validate input length
-    inputs = _TOKENIZER(text, return_tensors="pt").to(_MODEL.device)
-    input_length = inputs.input_ids.shape[1]
+    # Tokenize with padding/truncation for batch support
+    tokenized = _TOKENIZER(
+        prompts,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=max_input_length,
+    )
+    input_lengths = (tokenized["input_ids"] != _TOKENIZER.pad_token_id).sum(dim=1)
+    tokenized = {k: v.to(_MODEL.device) for k, v in tokenized.items()}
 
-    # Reject inputs that are too long
-    if input_length > max_input_length:
+    # Reject inputs that were truncated
+    if torch.any(input_lengths >= max_input_length):
         raise ValueError(
-            f"Input too long: {input_length} tokens (max {max_input_length})"
+            f"One or more inputs exceed max length ({max_input_length} tokens); please shorten the prompt."
         )
 
     # Calculate available tokens for generation
     max_new_tokens = int(params.get("max_new_tokens", 128))
-    available_tokens = max_total_tokens - input_length
+    available_tokens = max_total_tokens - input_lengths.max().item()
     max_new_tokens = min(max_new_tokens, available_tokens)
 
     if max_new_tokens <= 0:
         raise ValueError(
-            f"No tokens available for generation (input: {input_length}, max_total: {max_total_tokens})"
+            f"No tokens available for generation (longest input: {input_lengths.max().item()}, max_total: {max_total_tokens})"
         )
 
     temperature = float(params.get("temperature", 0.7))
     top_p = float(params.get("top_p", 0.9))
+    top_k = params.get("top_k")
+    do_sample = params.get("do_sample")
+    if do_sample is None:
+        do_sample = temperature > 0
     stops = params.get("stop") or []
+    if isinstance(stops, str):
+        stops = [stops]
+
+    seed = params.get("seed")
+    if seed is not None:
+        seed = int(seed)
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
 
     # Generate with proper inference mode and pad token
     with torch.inference_mode():
-        output_ids = _MODEL.generate(
-            **inputs,
-            max_new_tokens=max_new_tokens,
-            do_sample=temperature > 0,
-            temperature=temperature if temperature > 0 else None,
-            top_p=top_p if temperature > 0 else None,
-            eos_token_id=_TOKENIZER.eos_token_id,
-            pad_token_id=_TOKENIZER.pad_token_id,
-        )
+        generate_kwargs = {
+            **tokenized,
+            "max_new_tokens": max_new_tokens,
+            "do_sample": bool(do_sample),
+            "eos_token_id": _TOKENIZER.eos_token_id,
+            "pad_token_id": _TOKENIZER.pad_token_id,
+        }
+        if temperature is not None and do_sample:
+            generate_kwargs["temperature"] = max(temperature, 1e-5)
+            generate_kwargs["top_p"] = top_p
+            if top_k is not None:
+                generate_kwargs["top_k"] = int(top_k)
+
+        output_ids = _MODEL.generate(**generate_kwargs)
 
     # Slice off the input tokens to avoid echoing the prompt
-    new_tokens = output_ids[0][input_length:]
-    generated_text = _TOKENIZER.decode(new_tokens, skip_special_tokens=True)
+    generations: List[str] = []
+    completion_lengths: List[int] = []
 
-    # Apply stop sequences
-    for seq in stops:
-        if seq and seq in generated_text:
-            generated_text = generated_text.split(seq)[0]
-            break
+    for idx, prompt_len in enumerate(input_lengths.tolist()):
+        gen_ids = output_ids[idx][prompt_len:]
+        text = _TOKENIZER.decode(gen_ids, skip_special_tokens=True)
 
-    return {
-        "generated_text": generated_text,
-        "tokens": {
-            "input_tokens": input_length,
-            "generated_tokens": len(new_tokens),
+        for seq in stops:
+            if seq and seq in text:
+                text = text.split(seq)[0]
+                truncated_ids = _TOKENIZER(text, add_special_tokens=False)["input_ids"]
+                gen_ids = torch.tensor(truncated_ids, device=_MODEL.device)
+                break
+
+        generations.append(text.strip())
+        completion_lengths.append(int(len(gen_ids)))
+
+    prompt_tokens_total = int(input_lengths.sum().item())
+    completion_tokens_total = int(sum(completion_lengths))
+
+    response: Dict[str, Any] = {
+        "generated_text": generations[0] if len(generations) == 1 else generations,
+        "usage": {
+            "prompt_tokens": prompt_tokens_total,
+            "completion_tokens": completion_tokens_total,
+            "total_tokens": prompt_tokens_total + completion_tokens_total,
+        },
+        "details": {
+            "prompt_tokens_per_sample": input_lengths.tolist(),
+            "completion_tokens_per_sample": completion_lengths,
             "max_new_tokens": max_new_tokens,
         },
     }
 
+    return response
+
 
 def output_fn(pred, accept="application/json"):
     """Format response"""
-    return json.dumps(pred), accept
+    return json.dumps(pred)

@@ -47,26 +47,25 @@ class VSCodeSageMakerTrainer:
         print(f"   S3 Bucket: {self.s3_bucket}")
 
     def upload_data(self):
-        """Upload training data to S3"""
+        """Upload training data to S3 with correct filenames"""
         print("\n📤 Uploading training data to S3...")
 
         data_dir = Path("data/instructions")
         files_to_upload = [
-            ("iteration1_train.labeled.jsonl", "train.jsonl"),
+            ("iteration4_combined_train.jsonl", "train.jsonl"),
             ("iteration1_valid.jsonl", "valid.jsonl"),
         ]
 
         s3_inputs = {}
+        s3_client = boto3.client("s3")
 
         for local_file, s3_file in files_to_upload:
             local_path = data_dir / local_file
             if local_path.exists():
-                # Upload to S3
-                s3_uri = self.session.upload_data(
-                    path=str(local_path),
-                    bucket=self.s3_bucket,
-                    key_prefix=f"{self.s3_prefix}/data",
-                )
+                # Upload to S3 with the correct target filename
+                s3_key = f"{self.s3_prefix}/data/{s3_file}"
+                s3_client.upload_file(str(local_path), self.s3_bucket, s3_key)
+                s3_uri = f"s3://{self.s3_bucket}/{s3_key}"
                 s3_inputs[s3_file] = s3_uri
                 print(f"   ✅ {local_file} → {s3_uri}")
             else:
@@ -83,6 +82,7 @@ class VSCodeSageMakerTrainer:
         learning_rate=2e-4,
         instance_type=None,
         max_length=None,
+        grad_acc_steps=16,
     ):
         """Create and start SageMaker training job"""
         print("\n🚀 Creating SageMaker training job...")
@@ -102,12 +102,29 @@ class VSCodeSageMakerTrainer:
         script_dir = Path("scripts/train")
         script_dir.mkdir(exist_ok=True)
 
+        legacy_script = Path("src/training/legacy/sagemaker_train.py")
+        target_script = script_dir / "sagemaker_train.py"
+        if legacy_script.exists():
+            target_script.write_text(legacy_script.read_text(), encoding="utf-8")
+
+        legacy_requirements = Path("scripts/train/requirements.txt")
+        if not legacy_requirements.exists():
+            raise FileNotFoundError("scripts/train/requirements.txt is missing")
+
+        # Pull overrides from environment
+        epochs = int(os.getenv("TRAINING_EPOCHS", epochs))
+        batch_size = int(os.getenv("BATCH_SIZE", batch_size))
+        grad_acc_steps = int(os.getenv("GRAD_ACC_STEPS", grad_acc_steps))
+        if max_length is None:
+            max_length = int(os.getenv("MAX_SEQ_LEN", 2048))
+
         # Build hyperparameters
         hyperparameters = {
             "model-name": model_name,
             "epochs": epochs,
             "batch-size": batch_size,
             "learning-rate": learning_rate,
+            "gradient-accumulation-steps": grad_acc_steps,
         }
 
         # Add max_length if specified (for memory control)
@@ -125,6 +142,7 @@ class VSCodeSageMakerTrainer:
             py_version="py310",
             base_job_name="friday-finetune",
             hyperparameters=hyperparameters,
+            requirements_file=str(legacy_requirements),
             environment={
                 "TOKENIZERS_PARALLELISM": "false",
                 "PYTORCH_CUDA_ALLOC_CONF": "max_split_size_mb:512",
