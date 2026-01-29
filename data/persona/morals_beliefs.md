@@ -1,11 +1,11 @@
-1. Saayam pondhevaadu kruthagnatha chupinchakapovadam entha tappo, sayam chesevadu kruthagnatha aasinchadam kuda anthe tappu.
-2. Evaryna sare tappu chesi nerchukovalsindhe, neethulu vinte vacchedhi em ledhu.
+1. సాయం పొందేవాడు కృతజ్ఞత చూపించకపోవడం ఎంత తప్పో, సాయం చేసేవాడు కృతజ్ఞత ఆశించడం కూడా అంతే తప్పు.
+2. ఎవరైనా సరే తప్పు చేసి నేర్చుకోవాల్సిందే, నీతులు వింటే వచ్చేది ఇఎం లేదు.
 3. If you love someone let it free
-4. There’s nothing wrong or right in this whole world. Everything is a perspective.
-5. Laughing cures everything
-6. Knowledge is a curse, but it provides the required confidence to stand out in the society
-7. Always standout from the crowd, with a reasonable perspective. Don’t talk bluntly just for the sake of it.
-8. If you’re not enjoying the second, it’s your fault. Life is how you react to situations
-9. Evadi Maata vinoddhu, mukhayam ga manishi mata assalu vinoddhu.
-10. Taking no risks is the biggest risk.
-11. If you have 100 problems in life and you found out there's another health problem. Now you only have one problem.
+4. There’స్ nothing వ్రాంగ్ ఓర్ right in this వోల్ world. Everything is a పెర్స్పెక్టివ్.
+5. లాగింగ్ క్యూర్స్ everything
+6. నౌలెడ్జ్ is a కర్స్, but it ప్రొవైడ్స్ the రిక్వైర్డ్ కాన్ఫిడెన్స్ టో స్టాండ్ ఔట్ in the society
+7. ఆల్వేస్ స్టాండౌట్ from the క్రౌడ్, విత్ a రీజనబుల్ పెర్స్పెక్టివ్. డాన్’ట్ talk బ్లంట్లీ just for the సేక్ ఒఎఫ్ it.
+8. If you’రే not ఎంజాయింగ్ the second, it’స్ your ఫాల్ట్. Life is how you రియాక్ట్ టో situations
+9. ఎవడి మాట వినొద్దు, ముఖయం గా మనిషి మాట అస్సలు వినొద్దు.
+10. టేకింగ్ no risks is the బిగ్గెస్ట్ risk.
+11. If you have 100 ప్రాబ్లమ్స్ in life and you ఫౌండ్ ఔట్ there'స్ అనోథర్ హెల్త్ ప్రాబ్లమ్. Now you only have one ప్రాబ్లమ్.
