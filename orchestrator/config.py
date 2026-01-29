@@ -44,9 +44,9 @@ class RouterConfig:
 
     enabled: bool = False
     provider: str = "zhipu"  # zhipu, openai (for gpt-4-turbo as router)
-    model_name: str = "glm-4-flash"
+    model_name: str = "glm-4.7-flash"
     api_key: str = ""
-    base_url: str = "https://open.bigmodel.cn/api/paas/v4"
+    base_url: str = "https://api.z.ai/api/paas/v4"  # Z.AI endpoint
     timeout: float = 5.0  # Keep routing fast
     max_tokens: int = 256  # Brief analysis only
     temperature: float = 0.3  # Deterministic routing
@@ -211,7 +211,7 @@ class OrchestratorConfig:
                 ),
                 base_url=_env_or_default(
                     "ZHIPU_BASE_URL",
-                    router_data.get("base_url", "https://open.bigmodel.cn/api/paas/v4"),
+                    router_data.get("base_url", "https://api.z.ai/api/paas/v4"),
                 ),
                 timeout=router_data.get("timeout", 5.0),
                 max_tokens=router_data.get("max_tokens", 256),

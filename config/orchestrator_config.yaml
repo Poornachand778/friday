@@ -21,11 +21,11 @@ llm:
 # - Context detection (writers_room, kitchen, etc.)
 # - Complexity assessment (simple/moderate/complex)
 router:
-  enabled: false                   # Set to true to enable GLM router
+  enabled: true                    # GLM router is now enabled!
   provider: zhipu                  # zhipu (Z.AI) or openai
   model_name: glm-4.7-flash        # GLM-4.7-Flash for fast routing
   api_key: ${ZHIPU_API_KEY}        # Set via environment variable
-  base_url: https://open.bigmodel.cn/api/paas/v4
+  base_url: https://api.z.ai/api/paas/v4  # Z.AI endpoint (not old bigmodel.cn)
   timeout: 5.0                     # Keep routing fast
   max_tokens: 256                  # Brief analysis only
   temperature: 0.3                 # Deterministic routing
