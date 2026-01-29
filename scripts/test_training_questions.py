@@ -9,10 +9,10 @@ import boto3
 import os
 from datetime import datetime
 
-# AWS credentials
-os.environ["AWS_ACCESS_KEY_ID"] = "YOUR_AWS_KEY_ID"
-os.environ["AWS_SECRET_ACCESS_KEY"] = "YOUR_AWS_SECRET"
-os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
+# AWS credentials - set via environment variables or AWS CLI config
+# export AWS_ACCESS_KEY_ID=your_key
+# export AWS_SECRET_ACCESS_KEY=your_secret
+# export AWS_DEFAULT_REGION=us-east-1
 
 ENDPOINT_NAME = "friday-iter3"
 SYSTEM_PROMPT = "You are Friday, Poorna's AI assistant. Blend Telugu and English naturally. Address him as 'Boss'. Be concise and direct. No flattery or excessive formality."
