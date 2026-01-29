@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/eval_cases.schema.json",
+  "title": "EvalCaseRow",
+  "type": "object",
+  "required": ["prompt", "expect"],
+  "properties": {
+    "prompt": { "type": "string" },
+    "expect": { "type": "object", "additionalProperties": true },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

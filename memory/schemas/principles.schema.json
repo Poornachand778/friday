@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/principles.schema.json",
+  "title": "Principles",
+  "type": "object",
+  "required": ["principles"],
+  "properties": {
+    "principles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "statement", "priority", "enforcement_mode"],
+        "properties": {
+          "category": { "type": "string" },
+          "statement": { "type": "string" },
+          "priority": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "enforcement_mode": { "type": "string", "enum": ["hard_refuse", "ask_manager", "soft_warn"] },
+          "examples": { "type": "object", "additionalProperties": true }
+        },
+        "additionalProperties": false
+      }
+    },
+    "updated_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

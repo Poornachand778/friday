@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/sft_datasets.schema.json",
+  "title": "SFTDatasetRow",
+  "type": "object",
+  "required": ["path", "size_examples", "mix", "lang_mix"],
+  "properties": {
+    "path": { "type": "string" },
+    "size_examples": { "type": "integer", "minimum": 0 },
+    "mix": { "type": "object", "additionalProperties": true },
+    "lang_mix": { "type": "object", "additionalProperties": true },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

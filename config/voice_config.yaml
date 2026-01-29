@@ -1,0 +1,62 @@
+# Friday AI Voice Configuration
+# ==============================
+#
+# All settings can be overridden with environment variables:
+# e.g., VOICE_STT_MODEL=medium-v3 overrides stt.model
+
+daemon:
+  mode: standalone           # standalone or integrated
+  auto_start: false          # Start listening on daemon launch
+  idle_timeout_seconds: 300  # Stop after 5 minutes idle
+  max_session_minutes: 30    # Max conversation duration
+  device_id: default
+  location: writers_room     # Location identifier for logging
+
+audio:
+  sample_rate: 16000         # 16kHz for STT compatibility
+  channels: 1                # Mono
+  dtype: int16
+  chunk_size: 512            # Samples per chunk
+  vad_aggressiveness: 2      # 0-3, higher = more aggressive filtering
+  silence_threshold_ms: 500  # Silence duration to end utterance
+  max_recording_seconds: 30  # Max single utterance length
+
+stt:
+  engine: faster_whisper
+  model: large-v3            # Options: tiny, base, small, medium, large-v3
+  device: cuda               # cuda or cpu
+  compute_type: float16      # float16, int8, float32
+  language: null             # null = auto-detect (Telugu/English)
+  word_timestamps: true      # Enable word-level timing
+  vad_filter: true           # Use Silero VAD pre-filter
+  beam_size: 5
+
+tts:
+  engine: xtts_v2
+  device: cuda
+  default_language: en       # English for brainstorming
+  default_profile: null      # Use built-in voice (no cloning needed)
+  speed: 0.95                # Slightly slower for clarity
+  temperature: 0.65          # More consistent output
+  top_p: 0.85
+  top_k: 50
+  repetition_penalty: 10.0
+
+wakeword:
+  engine: openwakeword
+  models:
+    - name: hey_friday
+      threshold: 0.5
+    # Future: custom trained "Wake up Daddy's home"
+  inference_framework: onnx
+  vad_threshold: 0.5
+  noise_suppression: true
+
+storage:
+  enabled: true
+  base_path: voice/data/recordings
+  organize_by_date: true     # Creates YYYY/MM/DD subfolders
+  retention_days: 90
+  save_user_audio: true
+  save_response_audio: true
+  transcript_format: jsonl

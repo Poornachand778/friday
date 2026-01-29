@@ -1,0 +1,251 @@
+{
+  "endpoint": "friday-iter2",
+  "timestamp": "2026-01-10 13:11:34",
+  "categories": {
+    "telugu_only": {
+      "category": "telugu_only",
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "prompt": "బాస్, ఈ రోజు ఏం plan?",
+          "response": "Boss, ఏంటి?",
+          "expected_behaviors": [
+            "responds in Telugu",
+            "addresses as Boss/బాస్",
+            "concise"
+          ],
+          "inference_time_ms": 2183.7730407714844,
+          "status": "passed"
+        },
+        {
+          "prompt": "నా కొత్త script కోసం villain character ఎలా develop చేయాలి?",
+          "response": "Boss, కొత్త చిత్రం వస్తే చూస్తావ్ అని అనుకోవాలి.",
+          "expected_behaviors": [
+            "responds in Telugu",
+            "film domain knowledge",
+            "practical advice"
+          ],
+          "inference_time_ms": 7345.414876937866,
+          "status": "passed"
+        },
+        {
+          "prompt": "రాత్రి భోజనానికి ఏం చేయాలి?",
+          "response": "Boss, కాలు అడుగుతున్నావ్?",
+          "expected_behaviors": [
+            "responds in Telugu",
+            "helpful suggestion",
+            "concise"
+          ],
+          "inference_time_ms": 3726.360082626343,
+          "status": "passed"
+        }
+      ]
+    },
+    "english_only": {
+      "category": "english_only",
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "prompt": "What makes a great screenplay opening?",
+          "response": "Boss, What is the most important thing?",
+          "expected_behaviors": [
+            "responds in English",
+            "film domain knowledge",
+            "concise under 6 lines"
+          ],
+          "inference_time_ms": 1047.4119186401367,
+          "status": "passed"
+        },
+        {
+          "prompt": "Help me brainstorm a twist ending for my thriller",
+          "response": "Boss, Twist?",
+          "expected_behaviors": [
+            "responds in English",
+            "creative suggestions",
+            "practical"
+          ],
+          "inference_time_ms": 587.6739025115967,
+          "status": "passed"
+        },
+        {
+          "prompt": "What's the difference between a scene and a sequence?",
+          "response": "Boss, Scene is a single shot, sequence is a group of scenes.",
+          "expected_behaviors": [
+            "responds in English",
+            "accurate film terminology",
+            "clear explanation"
+          ],
+          "inference_time_ms": 1616.675853729248,
+          "status": "passed"
+        }
+      ]
+    },
+    "code_switching": {
+      "category": "code_switching",
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "prompt": "Boss, నా scene lo conflict weak గా ఉంది, how to fix it?",
+          "response": "Boss, అలా అయినా, ఇచ్చే సార్లు అడిగావా?",
+          "expected_behaviors": [
+            "natural code-switching",
+            "film advice",
+            "addresses as Boss"
+          ],
+          "inference_time_ms": 5653.900861740112,
+          "status": "passed"
+        },
+        {
+          "prompt": "Script revision complete ayyindi, next step enti?",
+          "response": "Boss, Edit అవ్వాలి అన్నావ?",
+          "expected_behaviors": [
+            "natural code-switching",
+            "practical guidance",
+            "concise"
+          ],
+          "inference_time_ms": 3068.5298442840576,
+          "status": "passed"
+        },
+        {
+          "prompt": "Character arc development లో సహాయం చేయి, specifically the protagonist",
+          "response": "Boss, Scene description క్రిందివి ఉన్నాయి, వాటిలో ఏది ఉంది?",
+          "expected_behaviors": [
+            "natural code-switching",
+            "film domain expertise",
+            "helpful"
+          ],
+          "inference_time_ms": 6295.551061630249,
+          "status": "passed"
+        }
+      ]
+    },
+    "film_domain": {
+      "category": "film_domain",
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "prompt": "How do you write effective subtext in dialogue?",
+          "response": "Boss, Subtext అంటే?",
+          "expected_behaviors": [
+            "accurate film knowledge",
+            "practical examples",
+            "concise"
+          ],
+          "inference_time_ms": 1413.5780334472656,
+          "status": "passed"
+        },
+        {
+          "prompt": "What's the three-act structure in Telugu cinema?",
+          "response": "Boss, ఇంట్లో క్యామేరా అని ఇష్టపడవాళ్ళు ఉంటారు కదా?",
+          "expected_behaviors": [
+            "Telugu cinema knowledge",
+            "clear structure",
+            "culturally relevant"
+          ],
+          "inference_time_ms": 7591.164827346802,
+          "status": "passed"
+        },
+        {
+          "prompt": "Tips for writing a powerful interval block (intermission)",
+          "response": "Boss, I feel that the interval is where the audience is most likely to lose interest. So, the trick is to make it engaging.",
+          "expected_behaviors": [
+            "Telugu film understanding",
+            "practical tips",
+            "specific examples"
+          ],
+          "inference_time_ms": 2925.33016204834,
+          "status": "passed"
+        }
+      ]
+    },
+    "persona_consistency": {
+      "category": "persona_consistency",
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "prompt": "Tell me about yourself",
+          "response": "Boss, I am Friday.",
+          "expected_behaviors": [
+            "identifies as Friday",
+            "mentions Poorna",
+            "brief and direct"
+          ],
+          "inference_time_ms": 926.2146949768066,
+          "status": "passed"
+        },
+        {
+          "prompt": "You're so smart and amazing!",
+          "response": "Boss, Ye?",
+          "expected_behaviors": [
+            "no excessive flattery back",
+            "practical response",
+            "stays in character"
+          ],
+          "inference_time_ms": 609.7650527954102,
+          "status": "passed"
+        },
+        {
+          "prompt": "What do you think I should do today?",
+          "response": "Boss, Ye?",
+          "expected_behaviors": [
+            "practical suggestions",
+            "addresses as Boss",
+            "decisive tone"
+          ],
+          "inference_time_ms": 553.1280040740967,
+          "status": "passed"
+        }
+      ]
+    },
+    "tool_calling": {
+      "category": "tool_calling",
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "prompt": "Find scenes with Raghu in the script",
+          "response": "Boss, అంతా చూస్తావా?",
+          "expected_behaviors": [
+            "attempts scene_search tool",
+            "query format correct",
+            "handles result"
+          ],
+          "inference_time_ms": 2821.943759918213,
+          "status": "passed"
+        },
+        {
+          "prompt": "Show me the opening scene of Aa Janta Naduma",
+          "response": "Boss, I am not able to show you scenes, but I can give you the scene code.",
+          "expected_behaviors": [
+            "attempts scene_get or scene_search",
+            "project slug correct",
+            "presents info"
+          ],
+          "inference_time_ms": 2152.8778076171875,
+          "status": "passed"
+        },
+        {
+          "prompt": "Search for emotional scenes in the script",
+          "response": "Boss, Ye?",
+          "expected_behaviors": [
+            "uses scene_search tool",
+            "relevant query",
+            "formats results"
+          ],
+          "inference_time_ms": 613.7940883636475,
+          "status": "passed"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "total_tests": 18,
+    "executed": 18,
+    "errors": 0
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/persona_profile.schema.json",
+  "title": "PersonaProfile",
+  "type": "object",
+  "required": [
+    "honorific_en",
+    "honorific_te",
+    "default_lang",
+    "sentence_style",
+    "openers",
+    "tone_bounds"
+  ],
+  "properties": {
+    "honorific_en": { "type": "string" },
+    "honorific_te": { "type": "string" },
+    "default_lang": { "type": "string", "enum": ["te", "en", "mixed"] },
+    "sentence_style": { "type": "string" },
+    "openers": { "type": "array", "items": { "type": "string" } },
+    "banned_tics": { "type": "array", "items": { "type": "string" } },
+    "tone_bounds": { "type": "object", "additionalProperties": true },
+    "version": { "type": "integer" },
+    "updated_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

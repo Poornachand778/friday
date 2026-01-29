@@ -1,0 +1,74 @@
+Open Source MCP Servers for Key AI Assistant Functions
+
+Model Context Protocol (MCP) servers are connectors that let AI models interact with external tools and data, transforming a passive assistant into an active agent
+getclockwise.com
+getclockwise.com
+. For your envisioned AI assistant system (“Friday” and its specialized models), several open-source MCP servers can provide the functionalities you need. Below are some useful MCP servers for the four key areas you mentioned, all of which can be self-hosted on your own hardware:
+
+Calendar Scheduling Integration
+
+To enable voice commands like “schedule my meeting” or check availability, you can use an open-source Google Calendar MCP server. For example, the Google Calendar MCP (by Takumi0706) provides a bridge to the Google Calendar API, allowing an AI assistant to list events, create or reschedule meetings, and manage your schedule
+github.com
+github.com
+. Another option is a comprehensive Google Workspace MCP (e.g. MarkusPfundstein’s mcp-gsuite) which integrates Gmail and Google Calendar together
+github.com
+. These servers let your AI securely read calendar events and perform scheduling tasks on command.
+
+News & Current Affairs Integration
+
+To keep your assistant updated with current affairs and daily news, you can deploy MCP servers that fetch live news updates. One popular choice is a Google News MCP server, which can pull headlines, trending stories, and topic-specific news (with multi-language support) via Google News APIs
+github.com
+. This allows your AI to answer questions like “What’s the latest in world news?” or provide movie industry news updates. Alternatively, a general RSS Aggregator MCP can compile articles from various news feeds in real-time
+github.com
+. Both approaches ensure your assistant stays informed on current events and can summarize or discuss the latest news when asked.
+
+Movie Information & Reviews Integration
+
+For movie reviews, film details, and entertainment updates, you can leverage open-source MCP servers that connect to movie databases. For instance, the IMDb MCP Server (by uzaysozen) gives AI access to detailed IMDb data – it can search films, get cast/crew info, ratings, and even fetch top charts or upcoming releases
+github.com
+github.com
+. There’s also a TMDB MCP Server (e.g. wizzy-mcp-tmdb) that hooks into The Movie Database API, enabling searches for movies/TV shows and retrieving information about films and actors
+github.com
+. Using these, your “script-writing model” or MVP assistant could answer questions like “What are the top-rated movies this week?” or pull up reviews and details for a film in conversation.
+
+Books & Author Information Integration
+
+To provide information on books, authors, or literary research, you can use an MCP server for a book database. A great open-source example is the Open Library MCP Server, which connects to the Internet Archive’s Open Library API. It allows AI assistants to search for books by title or author, retrieve author biographies, and get book details (publish dates, summaries, etc.)
+github.com
+. With this in place, your assistant can answer queries like “Who wrote this novel?” or help your scriptwriting by looking up author inspirations and book references on the fly. Another simple books MCP integration exists for quickly searching book info within a conversation
+github.com
+. These give your AI robust knowledge of literature and authors, useful for creative discussions or research.
+
+Voice Output and Persistent Memory
+
+(Beyond the four requested areas, your scenario also involves natural voice interaction and long-term context memory. Open-source MCP tools are available for these as well.) To make Friday talk humanly, you can integrate a text-to-speech MCP server. For example, there are servers like kokoro-tts-mcp that use open TTS models to convert text responses into spoken audio, providing realistic voice output
+github.com
+. This would connect all your models to a speech generator so the assistant can talk to you in real time. For memory management, you might consider a vector database MCP to serve as the system’s long-term memory. The Pinecone MCP Server (or similar open-source vector search connectors) allows an AI to store and retrieve embeddings for past interactions, acting as a persistent memory layer across sessions
+getclockwise.com
+. This ensures your assistant remembers context, past queries, and important details over time, which is critical for smooth, human-like conversations.
+
+Each of these MCP servers can be self-hosted and integrated into your MVP framework. Using them in combination, you’ll have a calendar agent for scheduling, a news agent for current events, a film information agent for movies/TV, and a literature agent for books – all coordinated by your central “Friday” MVP model. With voice and memory added to the mix, the result will be an AI office assistant that feels like a natural, context-aware collaborator, addressing all four of your key functional areas with open-source tools.
+
+Sources:
+
+Overview of MCP servers and their role
+getclockwise.com
+getclockwise.com
+
+Open-source Google Calendar MCP implementations
+github.com
+github.com
+
+Google News and RSS aggregator MCP servers for news updates
+github.com
+github.com
+
+IMDb/TMDB MCP servers for movie info and reviews
+github.com
+github.com
+
+Open Library MCP server for book and author info
+github.com
+
+TTS voice and Pinecone vector memory integrations
+github.com

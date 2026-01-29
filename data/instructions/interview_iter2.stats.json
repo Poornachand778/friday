@@ -1,0 +1,35 @@
+{
+  "total_examples": 120,
+  "topics": {
+    "tech": 8,
+    "persona": 8,
+    "decision_making": 8,
+    "relationships": 8,
+    "film": 8,
+    "money_finance": 8,
+    "travel_places": 8,
+    "telugu_culture": 8,
+    "work": 8,
+    "food": 8,
+    "humor": 8,
+    "creativity": 8,
+    "future_dreams": 8,
+    "emotions": 8,
+    "health": 8
+  },
+  "languages": {
+    "en": 46,
+    "te-en": 73,
+    "te": 1
+  },
+  "sources": {
+    "interview": 120
+  },
+  "token_estimates": {
+    "min": 118,
+    "max": 1059,
+    "total": 30617,
+    "avg": 255
+  },
+  "response_lengths_avg": 463
+}

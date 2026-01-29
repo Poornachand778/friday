@@ -1,0 +1,21 @@
+{
+  "name": "scene_manager",
+  "description": "Semantic screenplay search and editing tools exposed over MCP.",
+  "command": [
+    "/opt/anaconda3/bin/python",
+    "mcp/scene_manager/server.py"
+  ],
+  "working_directory": ".",
+  "env": {
+    "DB_HOST": "${DB_HOST}",
+    "DB_PORT": "${DB_PORT}",
+    "DB_NAME": "${DB_NAME}",
+    "DB_USER": "${DB_USER}",
+    "DB_PASSWORD": "${DB_PASSWORD}",
+    "SCENE_EMBED_MODEL": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+  },
+  "args": [
+    "--default-project",
+    "aa-janta-naduma"
+  ]
+}

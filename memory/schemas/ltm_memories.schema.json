@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/ltm_memories.schema.json",
+  "title": "LongTermMemoryRow",
+  "type": "object",
+  "required": ["id", "text", "lang", "tags", "trust", "created_at"],
+  "properties": {
+    "id": { "type": "string" },
+    "text": { "type": "string" },
+    "lang": { "type": "string", "enum": ["te", "en", "mixed"] },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "trust": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "embedding": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 1
+    },
+    "source": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

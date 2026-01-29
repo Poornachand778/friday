@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/eval_suites.schema.json",
+  "title": "EvalSuiteRow",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

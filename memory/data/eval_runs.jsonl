@@ -1,0 +1,5 @@
+{"run_id": "86a3a5035fa049f48154220d62c7ab72", "suite_id": "iter2_smoke", "model": "heuristic_friday", "total_cases": 20, "passed": 11, "created_at": "2025-09-21T20:35:06+00:00"}
+{"run_id": "86013a9b3eac47bcaf8dc07e4aa40d4a", "suite_id": "iter2_smoke", "model": "heuristic_friday", "total_cases": 20, "passed": 18, "created_at": "2025-09-21T20:37:30+00:00"}
+{"run_id": "9365c5030db440fb9fc93c17b0e72431", "suite_id": "iter2_smoke", "model": "heuristic_friday", "total_cases": 20, "passed": 20, "created_at": "2025-09-21T20:38:10+00:00"}
+{"run_id": "1d17390c10244b70be335aca6fee10d1", "suite_id": "iter2_smoke", "model": "heuristic_friday", "total_cases": 20, "passed": 20, "created_at": "2025-10-01T06:14:27+00:00"}
+{"run_id": "e4d9f5be474545b196ef5ceeca9407df", "suite_id": "iter2_smoke", "model": "heuristic_friday", "total_cases": 20, "passed": 20, "created_at": "2025-10-02T02:34:21+00:00"}

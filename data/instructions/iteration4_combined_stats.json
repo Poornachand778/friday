@@ -1,0 +1,26 @@
+{
+  "sources": {
+    "phase1_qa": 107,
+    "tool_examples": 50,
+    "interview": 120,
+    "whatsapp": 350,
+    "contrastive": 25
+  },
+  "languages": {
+    "te-en": 557,
+    "en": 94,
+    "te": 1
+  },
+  "duplicates_removed": 0,
+  "total": 652,
+  "token_distribution": {
+    "min_tokens": 48,
+    "max_tokens": 1059,
+    "mean_tokens": 133,
+    "p50_tokens": 99,
+    "p95_tokens": 296,
+    "p99_tokens": 459
+  },
+  "created": "2026-01-28T13:36:08.693752",
+  "output_file": "/Users/poornachandkeerthi/Friday/data/instructions/iteration4_combined_train.jsonl"
+}

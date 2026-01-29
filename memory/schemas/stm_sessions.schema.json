@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/stm_sessions.schema.json",
+  "title": "ShortTermSessionRow",
+  "type": "object",
+  "required": ["session_id", "rolling_summary", "target_lang", "updated_at"],
+  "properties": {
+    "session_id": { "type": "string" },
+    "rolling_summary": { "type": "string" },
+    "target_lang": { "type": "string", "enum": ["te", "en", "mixed"] },
+    "updated_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

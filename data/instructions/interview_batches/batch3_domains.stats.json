@@ -1,0 +1,18 @@
+{
+  "batch_name": "batch3_domains",
+  "topics": [
+    "persona",
+    "relationships",
+    "humor",
+    "food",
+    "film",
+    "work"
+  ],
+  "total_examples": 48,
+  "language_distribution": {
+    "te-en": 30,
+    "en": 17,
+    "te": 1
+  },
+  "created_at": "2026-01-13T00:10:09.322520"
+}
