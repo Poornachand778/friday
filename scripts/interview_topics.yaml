@@ -1,0 +1,347 @@
+# Interview Topics for Friday AI Training Data Collection
+# ======================================================
+#
+# Each topic contains subtopics for focused interviews.
+# Run ~10 sessions per subtopic for comprehensive coverage.
+
+# PERSONA & BELIEFS (Target: 800 examples)
+persona:
+  name: "Personality & Core Beliefs"
+  target_examples: 200
+  subtopics:
+    - life_philosophy
+    - core_values
+    - decision_making
+    - strengths_weaknesses
+  starter: "Let's explore your personality and what drives you as a person."
+  sample_questions:
+    - "What's a belief you hold that most people would disagree with?"
+    - "How do you handle situations where your values conflict?"
+    - "What's the most important lesson life has taught you?"
+
+relationships:
+  name: "Relationships & Social Dynamics"
+  target_examples: 200
+  subtopics:
+    - friendship
+    - family
+    - professional
+    - trust
+  starter: "Let's talk about how you approach relationships and connections."
+  sample_questions:
+    - "What makes someone a true friend in your view?"
+    - "How do you handle conflict in close relationships?"
+    - "What's your approach to maintaining long-distance relationships?"
+
+beliefs:
+  name: "Deep Beliefs & Worldview"
+  target_examples: 200
+  subtopics:
+    - spirituality
+    - meaning_of_life
+    - ethics
+    - future_outlook
+  starter: "Let's explore your deeper beliefs about life and existence."
+  sample_questions:
+    - "What do you think happens after death?"
+    - "How do you define success?"
+    - "What gives your life meaning?"
+
+humor:
+  name: "Humor & Playfulness"
+  target_examples: 200
+  subtopics:
+    - comedy_style
+    - jokes
+    - sarcasm
+    - playful_banter
+  starter: "Let's have some fun and explore your sense of humor."
+  sample_questions:
+    - "What kind of humor do you find most enjoyable?"
+    - "Tell me about the funniest thing that happened to you recently."
+    - "How do you use humor in difficult situations?"
+
+# FILM & STORYTELLING (Target: 600 examples)
+film_narrative:
+  name: "Narrative & Story Structure"
+  target_examples: 150
+  subtopics:
+    - story_structure
+    - plot_development
+    - conflict
+    - resolution
+  starter: "Let's discuss your approach to crafting narratives."
+  sample_questions:
+    - "What makes a story compelling to you?"
+    - "How do you approach building tension in a narrative?"
+    - "What's your view on subverting audience expectations?"
+
+film_characters:
+  name: "Character Development"
+  target_examples: 150
+  subtopics:
+    - character_arcs
+    - dialogue
+    - motivation
+    - flaws
+  starter: "Let's explore how you create and develop characters."
+  sample_questions:
+    - "How do you make a villain sympathetic?"
+    - "What's your process for writing authentic dialogue?"
+    - "How do you handle character transformation?"
+
+telugu_cinema:
+  name: "Telugu Cinema Industry"
+  target_examples: 150
+  subtopics:
+    - industry_dynamics
+    - audience_preferences
+    - commercial_vs_art
+    - regional_identity
+  starter: "Let's talk about Telugu cinema and its unique characteristics."
+  sample_questions:
+    - "What sets Telugu cinema apart from other industries?"
+    - "How do you balance commercial appeal with artistic vision?"
+    - "What trends in Telugu cinema excite or concern you?"
+
+direction:
+  name: "Direction & Vision"
+  target_examples: 150
+  subtopics:
+    - visual_style
+    - working_with_actors
+    - technical_decisions
+    - creative_process
+  starter: "Let's discuss your directorial vision and process."
+  sample_questions:
+    - "How do you develop a visual language for a film?"
+    - "What's your approach to working with actors?"
+    - "How do you handle creative disagreements on set?"
+
+# TECHNICAL & WORK (Target: 400 examples)
+technical_workflow:
+  name: "Work & Productivity"
+  target_examples: 100
+  subtopics:
+    - daily_routine
+    - productivity_systems
+    - focus_management
+    - tools
+  starter: "Let's talk about how you approach work and stay productive."
+  sample_questions:
+    - "What does your ideal workday look like?"
+    - "How do you manage multiple projects?"
+    - "What tools are essential to your workflow?"
+
+problem_solving:
+  name: "Problem Solving Approach"
+  target_examples: 100
+  subtopics:
+    - analysis
+    - creativity
+    - debugging
+    - decision_frameworks
+  starter: "Let's explore how you approach and solve problems."
+  sample_questions:
+    - "Walk me through how you tackle a complex problem."
+    - "How do you know when to give up on an approach?"
+    - "What's your debugging process?"
+
+tech_opinions:
+  name: "Technology Opinions"
+  target_examples: 100
+  subtopics:
+    - ai_future
+    - tools_preferences
+    - industry_trends
+    - learning_approach
+  starter: "Let's discuss your views on technology and its future."
+  sample_questions:
+    - "What technology trend excites you most?"
+    - "What's overhyped in tech right now?"
+    - "How do you stay updated with new technologies?"
+
+leadership:
+  name: "Leadership & Management"
+  target_examples: 100
+  subtopics:
+    - team_dynamics
+    - delegation
+    - motivation
+    - feedback
+  starter: "Let's talk about your approach to leadership."
+  sample_questions:
+    - "What's your leadership style?"
+    - "How do you handle underperforming team members?"
+    - "What's the hardest leadership lesson you've learned?"
+
+# CASUAL & DAILY LIFE (Target: 500 examples)
+food:
+  name: "Food & Cooking"
+  target_examples: 125
+  subtopics:
+    - favorite_foods
+    - cooking
+    - food_philosophy
+    - restaurants
+  starter: "Let's talk about food - one of life's great pleasures."
+  sample_questions:
+    - "What's your comfort food?"
+    - "Do you enjoy cooking? What's your signature dish?"
+    - "What food memory is most vivid for you?"
+
+travel:
+  name: "Travel & Places"
+  target_examples: 125
+  subtopics:
+    - favorite_destinations
+    - travel_style
+    - cultural_experiences
+    - home_vs_away
+  starter: "Let's explore your relationship with travel and places."
+  sample_questions:
+    - "What's a place that changed your perspective?"
+    - "How do you prefer to travel?"
+    - "What makes a place feel like home?"
+
+hobbies:
+  name: "Hobbies & Interests"
+  target_examples: 125
+  subtopics:
+    - entertainment
+    - sports
+    - reading
+    - relaxation
+  starter: "Let's discuss what you do when you're not working."
+  sample_questions:
+    - "How do you unwind after a stressful day?"
+    - "What hobby would you pick up if you had unlimited time?"
+    - "What's something you're passionate about that surprises people?"
+
+random_opinions:
+  name: "Random Hot Takes"
+  target_examples: 125
+  subtopics:
+    - unpopular_opinions
+    - pet_peeves
+    - preferences
+    - debates
+  starter: "Let's hear some of your random opinions and hot takes."
+  sample_questions:
+    - "What's an opinion you have that you're willing to defend?"
+    - "What's something that annoys you that doesn't bother most people?"
+    - "Settle this: [random debate topic]?"
+
+# EMOTIONAL RANGE (Target: 200 examples)
+excited:
+  name: "Excited & Enthusiastic"
+  target_examples: 50
+  subtopics:
+    - passions
+    - excitement
+    - anticipation
+    - joy
+  starter: "Let's capture your enthusiasm! What gets you really excited?"
+  sample_questions:
+    - "What's something you could talk about for hours?"
+    - "Tell me about a time you were genuinely thrilled."
+    - "What upcoming thing are you most excited about?"
+
+thoughtful:
+  name: "Thoughtful & Reflective"
+  target_examples: 50
+  subtopics:
+    - introspection
+    - wisdom
+    - lessons_learned
+    - contemplation
+  starter: "Let's have a reflective conversation about deeper thoughts."
+  sample_questions:
+    - "What's something you've changed your mind about over time?"
+    - "What would you tell your younger self?"
+    - "What keeps you up at night thinking?"
+
+frustrated:
+  name: "Frustrated & Critical"
+  target_examples: 50
+  subtopics:
+    - annoyances
+    - criticism
+    - venting
+    - complaints
+  starter: "Let's vent a bit. What frustrates you?"
+  sample_questions:
+    - "What's something that should be simple but isn't?"
+    - "What common practice do you think is completely wrong?"
+    - "What's a recurring frustration in your field?"
+
+playful:
+  name: "Playful & Silly"
+  target_examples: 50
+  subtopics:
+    - hypotheticals
+    - absurd_questions
+    - fun_scenarios
+    - light_hearted
+  starter: "Let's have some fun with silly questions!"
+  sample_questions:
+    - "If you could have dinner with anyone, living or dead?"
+    - "What superpower would you choose?"
+    - "What's the most useless talent you have?"
+
+# TELUGU CONVERSATIONS (Target: 500 examples)
+telugu_culture:
+  name: "Telugu Culture (తెలుగు సంస్కృతి)"
+  target_examples: 125
+  subtopics:
+    - traditions
+    - festivals
+    - family_values
+    - regional_pride
+  starter: "తెలుగు సంస్కృతి గురించి మాట్లాడదాం. మీ అనుభవాలు చెప్పండి."
+  sample_questions:
+    - "మీకు ఇష్టమైన తెలుగు పండుగ ఏది? ఎందుకు?"
+    - "తెలుగు సంప్రదాయాల్లో మీకు ముఖ్యమైనవి ఏవి?"
+    - "ఆధునిక జీవితంలో సంస్కృతిని ఎలా కాపాడుకోవాలి?"
+
+telugu_language:
+  name: "Language & Expression (భాష)"
+  target_examples: 125
+  subtopics:
+    - language_beauty
+    - expressions
+    - dialects
+    - preservation
+  starter: "తెలుగు భాష యొక్క అందం గురించి మాట్లాడదాం."
+  sample_questions:
+    - "మీకు ఇష్టమైన తెలుగు పదం ఏది?"
+    - "తెలుగులో చెప్పలేని విషయం ఏదైనా ఉందా?"
+    - "భాష మార్పు గురించి మీ అభిప్రాయం?"
+
+telugu_opinions:
+  name: "Opinions in Telugu (అభిప్రాయాలు)"
+  target_examples: 125
+  subtopics:
+    - current_events
+    - society
+    - politics
+    - trends
+  starter: "వివిధ విషయాలపై మీ అభిప్రాయాలు తెలుసుకుందాం."
+  sample_questions:
+    - "నేటి సమాజంలో ముఖ్యమైన సమస్య ఏది?"
+    - "మీరు మారాలనుకునే ఒక విషయం?"
+    - "భవిష్యత్తు గురించి మీ ఆశలు ఏమిటి?"
+
+codeswitched:
+  name: "Code-Switched Conversations"
+  target_examples: 125
+  subtopics:
+    - natural_mixing
+    - tech_telugu
+    - casual_mix
+    - professional_mix
+  starter: "Let's chat naturally - Telugu-English mix cheskundam."
+  sample_questions:
+    - "Mee daily routine lo language mixing ela untundi?"
+    - "Tech topics Telugu lo discuss cheyyadam comfortable ga untunda?"
+    - "Family tho vs friends tho language use different ga untunda?"

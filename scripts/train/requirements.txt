@@ -1,0 +1,23 @@
+# Friday Iteration 2 training dependencies (CPU/GPU agnostic)
+numpy==1.23.5
+scipy==1.11.1
+transformers==4.44.2
+accelerate==0.33.0
+peft==0.11.1
+bitsandbytes==0.43.3
+datasets==2.20.0
+tokenizers==0.19.1
+sentencepiece==0.2.0
+safetensors==0.4.3
+tqdm==4.66.5
+pyyaml==6.0.1
+packaging==23.2
+typing-extensions==4.7.1
+fsspec==2023.6.0
+requests==2.32.3
+regex==2023.12.25
+dill==0.3.8
+multiprocess==0.70.16
+huggingface-hub==0.24.1
+filelock==3.12.4
+psutil==5.9.5
