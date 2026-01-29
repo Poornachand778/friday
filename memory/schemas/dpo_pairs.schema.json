@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/dpo_pairs.schema.json",
+  "title": "DPOPairRow",
+  "type": "object",
+  "required": ["prompt", "chosen", "rejected"],
+  "properties": {
+    "prompt": { "type": "string" },
+    "chosen": { "type": "string" },
+    "rejected": { "type": "string" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "lang": { "type": "string", "enum": ["te", "en", "mixed"] },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/content_snippets.schema.json",
+  "title": "ContentSnippetRow",
+  "type": "object",
+  "required": ["id", "title", "body", "lang", "tags", "created_at"],
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "body": { "type": "string" },
+    "lang": { "type": "string", "enum": ["te", "en", "mixed"] },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "version": { "type": "integer" },
+    "embedding": { "type": "array", "items": { "type": "number" } },
+    "domain": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}

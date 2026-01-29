@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/eval_runs.schema.json",
+  "title": "EvalRunRow",
+  "type": "object",
+  "required": ["model_name"],
+  "properties": {
+    "model_name": { "type": "string" },
+    "baseline_name": { "type": "string" },
+    "suite": { "type": "string" },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

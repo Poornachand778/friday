@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/adapters.schema.json",
+  "title": "AdapterRow",
+  "type": "object",
+  "required": ["name", "base_model", "path", "status"],
+  "properties": {
+    "name": { "type": "string" },
+    "base_model": { "type": "string" },
+    "path": { "type": "string" },
+    "eval_gate": { "type": "object", "additionalProperties": true },
+    "status": { "type": "string", "enum": ["staging", "live", "rejected"] },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

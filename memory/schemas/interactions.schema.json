@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/interactions.schema.json",
+  "title": "InteractionRow",
+  "type": "object",
+  "required": ["id", "session_id", "user_msg", "model_reply", "created_at"],
+  "properties": {
+    "id": { "type": "string" },
+    "session_id": { "type": "string" },
+    "user_msg": { "type": "string" },
+    "model_reply": { "type": "string" },
+    "used_ltm_ids": { "type": "array", "items": { "type": "string" } },
+    "used_snippet_ids": { "type": "array", "items": { "type": "string" } },
+    "stm_summary": { "type": "string" },
+    "lang": { "type": "string", "enum": ["te", "en", "mixed"] },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

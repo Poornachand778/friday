@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://friday.local/schemas/eval_results.schema.json",
+  "title": "EvalResultRow",
+  "type": "object",
+  "required": ["output", "metrics"],
+  "properties": {
+    "case_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "output": { "type": "string" },
+    "metrics": { "type": "object", "additionalProperties": true },
+    "created_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+
