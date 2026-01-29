@@ -70,5 +70,15 @@ tmp/
 temp/
 *.tmp
 *.bak
-.env
-.env.*
+
+# Claude Code
+.claude/
+
+# Media files (voice samples, PDFs)
+*.mp3
+*.wav
+*.pdf
+
+# Data files that are too large
+data/raw/
+data/processed/

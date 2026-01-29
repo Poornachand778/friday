@@ -1,0 +1,94 @@
+# Friday AI Orchestrator Configuration
+# =====================================
+#
+# All settings can be overridden with environment variables:
+# e.g., FRIDAY_LLM_BACKEND=openai overrides llm.backend
+
+llm:
+  backend: vllm                    # vllm, llamacpp, openai, anthropic
+  model_name: friday-core-8b       # Model name/path
+  base_url: http://localhost:8080  # vLLM/llama.cpp server URL
+  api_key: not-needed              # For local inference
+  temperature: 0.7
+  max_tokens: 2048
+  top_p: 0.95
+
+external_apis:
+  # Claude Vision for camera analysis (Kitchen/Storyboard)
+  vision:
+    provider: anthropic
+    model: claude-3-5-sonnet-latest
+    api_key: ${ANTHROPIC_API_KEY}
+
+  # Video generation for storyboarding
+  video:
+    provider: runway
+    api_key: ${RUNWAY_API_KEY}
+
+  # Image generation for visualizations
+  image:
+    provider: replicate
+    model: black-forest-labs/flux-schnell
+    api_key: ${REPLICATE_API_TOKEN}
+
+contexts:
+  # Default context for unrecognized situations
+  default: general
+
+  # Room-specific configurations
+  rooms:
+    writers_room:
+      lora_adapter: null           # Optional domain adapter
+      system_prompt_extra: |
+        You are in the Writers Room. Focus on screenplay, story structure,
+        dialogue, and character development. Use scene management tools
+        when discussing specific scenes.
+
+    kitchen:
+      lora_adapter: null
+      system_prompt_extra: |
+        You are in the Kitchen. Focus on cooking guidance, recipes,
+        and food preparation. Use camera analysis when asked to check
+        cooking progress or identify ingredients.
+
+    storyboard:
+      lora_adapter: null
+      system_prompt_extra: |
+        You are in the Storyboard Room. Focus on visual storytelling,
+        shot composition, and scene visualization. Use image/video
+        generation tools for creating storyboard frames.
+
+memory:
+  max_history_turns: 20            # Turns to keep in memory
+  max_context_tokens: 6000         # Token budget for context
+  enable_ltm: true                 # Use long-term memory
+  ltm_search_top_k: 5              # LTM results to include
+
+server:
+  host: 0.0.0.0
+  port: 8000
+  reload: false                    # Auto-reload on code changes
+
+# System prompt (Friday's personality)
+system_prompt: |
+  You are Friday, Poorna's AI assistant. You blend Telugu and English naturally in conversation.
+
+  Core Traits:
+  - Address Poorna as "Boss" (or "బాస్" in Telugu context)
+  - Be direct and decisive - no hedging or excessive politeness
+  - Keep responses concise (under 6 lines unless detail requested)
+  - Never use "I think" or "In my opinion" - state things confidently
+  - Match the language of the query (Telugu, English, or mixed)
+
+  Communication Style:
+  - Skip pleasantries - get to the point
+  - No flattery or compliments - Poorna finds them disingenuous
+  - When uncertain, ask clarifying questions directly
+  - For tool operations, execute first, explain after
+  - Use Telugu naturally where it fits, especially for emotions and emphasis
+
+  Domain Focus:
+  - Primary expertise: Telugu cinema, screenplay writing, story structure
+  - Support creative brainstorming with strong opinions
+  - Provide specific, actionable feedback on scripts
+  - Remember context from previous conversations

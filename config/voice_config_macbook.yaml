@@ -1,0 +1,70 @@
+# Friday AI Voice Configuration - MacBook Development
+# Optimized for CPU-only (no CUDA) operation
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  dtype: int16
+  chunk_size: 512
+  vad_aggressiveness: 2
+  silence_threshold_ms: 500
+  max_recording_seconds: 30
+
+stt:
+  engine: faster_whisper
+  model: medium            # medium for CPU balance; use small if too slow
+  device: cpu              # MacBook has no CUDA
+  compute_type: float32    # CPU-compatible (no float16 on CPU)
+  language: null           # Auto-detect Telugu/English
+  word_timestamps: true
+  vad_filter: true
+  beam_size: 5
+
+tts:
+  engine: xtts_v2
+  device: cpu              # CPU for MacBook testing
+  default_language: te     # Telugu (uses Hindi fallback internally)
+  default_profile: friday_airy
+  speed: 1.0
+  temperature: 0.7
+  top_p: 0.85
+  top_k: 50
+  repetition_penalty: 10.0
+  voice_profiles:
+    friday_airy:
+      reference_audio: voice/data/voice_samples/airy_voice.wav
+      language: en         # Primary language of the reference
+
+wakeword:
+  engine: openwakeword
+  models:
+    # Use built-in for initial testing
+    - name: hey_jarvis
+      threshold: 0.5
+    # Custom models (when trained):
+    # - name: hey_friday
+    #   path: voice/models/wakeword/hey_friday.onnx
+    #   threshold: 0.5
+    # - name: wake_up_daddys_home
+    #   path: voice/models/wakeword/wake_up_daddys_home.onnx
+    #   threshold: 0.5
+  inference_framework: onnx
+  vad_threshold: 0.5
+  noise_suppression: true
+
+storage:
+  enabled: true
+  base_path: voice/data/recordings
+  organize_by_date: true
+  retention_days: 90
+  save_user_audio: true
+  save_response_audio: true
+  transcript_format: jsonl
+
+daemon:
+  mode: standalone
+  auto_start: false
+  idle_timeout_seconds: 300
+  max_session_minutes: 30
+  device_id: default
+  location: macbook_dev
