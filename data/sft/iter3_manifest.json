@@ -1,0 +1,67 @@
+[
+  {
+    "dataset": "data/processed/whatsapp/Asha Sis.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 1201
+  },
+  {
+    "dataset": "data/processed/whatsapp/Gayatri 🧶.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 1230
+  },
+  {
+    "dataset": "data/processed/whatsapp/Indu 💫.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 918
+  },
+  {
+    "dataset": "data/processed/whatsapp/Niha ➰.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 3798
+  },
+  {
+    "dataset": "data/processed/whatsapp/Nikhila Maduri.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 3293
+  },
+  {
+    "dataset": "data/processed/whatsapp/Samantha Vihari.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 506
+  },
+  {
+    "dataset": "data/processed/whatsapp/Sappy.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 603
+  },
+  {
+    "dataset": "data/processed/whatsapp/Shreya Aswal HR UC.jsonl",
+    "type": "whatsapp_chat",
+    "examples": 207
+  },
+  {
+    "dataset": "data/sft/iter2/whatsapp_train.jsonl",
+    "type": "whatsapp_split",
+    "examples": 10577
+  },
+  {
+    "dataset": "data/sft/iter2/whatsapp_val.jsonl",
+    "type": "whatsapp_split",
+    "examples": 1179
+  },
+  {
+    "dataset": "data/instructions/iteration1_train.jsonl",
+    "type": "iteration1",
+    "examples": 242
+  },
+  {
+    "dataset": "data/instructions/iteration1_train.labeled.jsonl",
+    "type": "iteration1",
+    "examples": 242
+  },
+  {
+    "dataset": "data/instructions/iteration1_valid.jsonl",
+    "type": "iteration1",
+    "examples": 26
+  }
+]

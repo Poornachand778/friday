@@ -1,0 +1,39 @@
+{
+  "sources": {
+    "interview": {
+      "loaded": 120,
+      "added": 120,
+      "duplicates": 0
+    },
+    "whatsapp": {
+      "loaded": 350,
+      "added": 350,
+      "duplicates": 0
+    },
+    "contrastive": {
+      "loaded": 25,
+      "added": 25,
+      "duplicates": 0
+    },
+    "tools": {
+      "loaded": 33,
+      "added": 33,
+      "duplicates": 0
+    }
+  },
+  "domains": {
+    "persona": 398,
+    "film": 8,
+    "general": 64,
+    "contrastive": 25,
+    "tools": 33
+  },
+  "languages": {
+    "en": 182,
+    "te-en": 73,
+    "te": 273
+  },
+  "duplicates_removed": 0,
+  "total_examples": 528,
+  "timestamp": "2026-01-26T05:39:10.916923+00:00"
+}

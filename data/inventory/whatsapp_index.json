@@ -1,0 +1,54 @@
+{
+  "created_at": "2025-09-21T18:04:27+00:00",
+  "root": "data/raw/whatsapp",
+  "files": [
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Asha Sis/_chat.txt",
+      "chat_name": "Asha Sis",
+      "line_count": 6846,
+      "guessed_format": "iOS"
+    },
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Gayatri 🧶/_chat.txt",
+      "chat_name": "Gayatri 🧶",
+      "line_count": 9086,
+      "guessed_format": "iOS"
+    },
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Indu 💫/_chat.txt",
+      "chat_name": "Indu 💫",
+      "line_count": 3869,
+      "guessed_format": "iOS"
+    },
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Niha ➰/_chat.txt",
+      "chat_name": "Niha ➰",
+      "line_count": 18774,
+      "guessed_format": "iOS"
+    },
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Nikhila Maduri/_chat.txt",
+      "chat_name": "Nikhila Maduri",
+      "line_count": 14623,
+      "guessed_format": "iOS"
+    },
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Samantha Vihari/_chat.txt",
+      "chat_name": "Samantha Vihari",
+      "line_count": 3040,
+      "guessed_format": "iOS"
+    },
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Sappy/_chat.txt",
+      "chat_name": "Sappy",
+      "line_count": 2500,
+      "guessed_format": "iOS"
+    },
+    {
+      "file_path": "data/raw/whatsapp/WhatsApp Chat - Shreya Aswal HR UC/_chat.txt",
+      "chat_name": "Shreya Aswal HR UC",
+      "line_count": 1120,
+      "guessed_format": "iOS"
+    }
+  ]
+}

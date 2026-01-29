@@ -1,0 +1,60 @@
+{
+  "sources": {
+    "tool_examples": 33,
+    "whatsapp": 700,
+    "decision_scenarios": 35
+  },
+  "total_before_dedup": 768,
+  "total_after_dedup": 768,
+  "timestamp": "2026-01-07T07:46:28.396134+00:00",
+  "whatsapp_breakdown": {
+    "by_language": {
+      "te": 428,
+      "en": 272
+    },
+    "by_chat": {
+      "Asha Sis": 92,
+      "Gayatri 🧶": 85,
+      "Indu 💫": 70,
+      "Niha ➰": 224,
+      "Nikhila Maduri": 229
+    }
+  },
+  "gap_analysis": {
+    "topic_distribution": {
+      "persona": 700,
+      "tag:persona": 700,
+      "tag:whatsapp": 700,
+      "tag:clarifying": 387,
+      "tag:script": 324,
+      "tag:decision-making": 35,
+      "film": 33,
+      "production": 7,
+      "tag:production": 7,
+      "kitchen": 5,
+      "tag:kitchen": 5,
+      "personal": 5,
+      "tag:personal": 5,
+      "post": 3,
+      "tag:post": 3,
+      "team": 3,
+      "tag:team": 3,
+      "writing": 3,
+      "tag:writing": 3,
+      "casting": 2
+    },
+    "language_distribution": {
+      "unknown": 68,
+      "te": 428,
+      "en": 272
+    },
+    "recommendations": [
+      "Create more film examples (currently: 33)",
+      "Create more production examples (currently: 14)",
+      "Create more decision-making examples (currently: 35)",
+      "Create more technical examples (currently: 0)",
+      "Create more creative examples (currently: 0)",
+      "Create more planning examples (currently: 0)"
+    ]
+  }
+}

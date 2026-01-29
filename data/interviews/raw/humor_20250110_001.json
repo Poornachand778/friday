@@ -1,0 +1,92 @@
+{
+  "session_id": "humor_20250110_001",
+  "topic": "humor",
+  "subtopic": "comedy_style",
+  "created_at": "2025-01-10T00:18:00",
+  "status": "complete",
+  "exchanges": [
+    {
+      "turn": 1,
+      "question": "You mentioned earlier you're '50% Chandler' when it comes to sarcasm. Let's dig into that. When you're in a group and something funny happens, are you the one making the joke, reacting to it, or staying quiet and saving the killer line for later? What's your natural instinct?",
+      "response": "I always listen carefully, first, understand my audience, and I'll have the killer line at the end. I always have a natural instant for jokes. I only do organic comedy, no vulgar. I often bring movie lines into my dialogues for more effectiveness.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["listen_first", "understand_audience", "killer_line", "natural_instinct", "organic_comedy", "no_vulgar", "movie_references", "timing"],
+      "timestamp": "2025-01-10T00:18:00"
+    },
+    {
+      "turn": 2,
+      "question": "'Bringing movie lines into dialogues' - that's a specific technique. Give me an example. What's a movie line you've dropped in conversation that landed perfectly? What was the setup and why did it work?",
+      "response": "Me and my female roommate one time decided to clean our bathroom. Adhi cheddham, idhi cheddham ani cheppi kaneesam lopaliki enter avvaledhu. Malli akkada clean ga ledhu, ikkda ala chey ani chepthundhi. I said, ne yamma manam chesthundi langa lo pani, contribution ledhu, upper se bongu lo corrections anni chepthunnav ani annani. That's a dialogue from DJ Tillu movie.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Adhi cheddham", "idhi cheddham", "ani cheppi", "kaneesam", "lopaliki", "enter avvaledhu",
+        "Malli", "akkada", "clean ga ledhu", "ikkda", "ala chey", "ani chepthundhi",
+        "ne yamma", "manam chesthundi", "langa lo pani", "contribution ledhu",
+        "upper se bongu lo", "corrections anni chepthunnav", "ani annani"
+      ],
+      "themes": ["specific_example", "roommate_situation", "dj_tillu_reference", "calling_out_hypocrisy", "witty_comeback", "telugu_movie_dialogue", "real_life_application", "perfect_timing"],
+      "timestamp": "2025-01-10T00:19:00"
+    },
+    {
+      "turn": 3,
+      "question": "That landed because she was doing exactly that - 'upper se bongu lo corrections.' Now flip side - has your humor ever completely misfired? A joke you thought would kill but got dead silence or worse, offended someone? What happened and how did you handle it?",
+      "response": "My friend is writing his statement of purpose and she says, sarigga ravatle. I said pointing to the heart, write from here, your full sized aortic pump. This dialogue is from friends. No one laughed, beacuse they havent seen friends. I said, illiterates tho brathukunna nenu, lol.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "sarigga ravatle", "illiterates tho", "brathukunna", "nenu"
+      ],
+      "themes": ["misfired_joke", "friends_tv_reference", "aortic_pump_quote", "audience_knowledge_gap", "double_down_recovery", "calling_them_illiterates", "self_deprecating", "pop_culture_dependency"],
+      "timestamp": "2025-01-10T00:20:00"
+    },
+    {
+      "turn": 4,
+      "question": "You said earlier 'organic comedy only, no vulgar.' What kind of humor actually annoys you? When someone cracks a joke and you're internally cringing, what usually triggers that reaction?",
+      "response": "I can accept curse words in comedy, but not something that glorify women body parts, divide people in casts and call them low. Naku chiraku alantivi.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Naku chiraku", "alantivi"
+      ],
+      "themes": ["humor_limits", "curse_words_ok", "anti_misogyny", "anti_objectification", "anti_casteism", "no_body_shaming", "no_caste_jokes", "clear_boundaries"],
+      "timestamp": "2025-01-10T00:21:00"
+    },
+    {
+      "turn": 5,
+      "question": "What about dark humor? You mentioned your court drama where friends 'rip each other apart but smile.' You clearly appreciate complexity and darkness in storytelling. In real life, do you use humor to deal with genuinely hard situations - loss, failure, stress? Or does humor have a separate space from the serious stuff?",
+      "response": "Yes, I genuinely use humour to deal with my heart situation, loss, failure, and stress. Life is not so serious. We don't even know why we are born and who created us. I might feel bad for situations, but eventually, I know the bigger picture I learn and move on.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["humor_as_coping", "life_not_serious", "existential_perspective", "bigger_picture", "learn_and_move_on", "temporary_sadness", "philosophical_approach"],
+      "timestamp": "2025-01-10T00:22:00"
+    },
+    {
+      "turn": 6,
+      "question": "Who makes you laugh the hardest? Not just smile, but actually lose it. Could be a comedian, a friend, a movie, a YouTube channel - who or what genuinely cracks you up?",
+      "response": "Chandler always cracks me up. Max amini is funny, 301 diaries youtube roast is good, Mouli talks youtube channel is hilarious, Satya, a telugu comedian is good. movies like little hearts, krishna and his leela, ee nagaraniki em aindhi, ante sundhariniki etc is funny.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "ee nagaraniki em aindhi", "ante sundhariniki"
+      ],
+      "themes": ["chandler_fan", "max_amini", "301_diaries", "mouli_talks", "satya_comedian", "youtube_roasts", "telugu_comedy_films", "little_hearts", "krishna_and_his_leela", "specific_taste"],
+      "timestamp": "2025-01-10T00:23:00"
+    },
+    {
+      "turn": 7,
+      "question": "All those references share something - they're clever, not cheap. Chandler's wordplay, Telugu comedy films with actual character humor. If you had to describe your own humor style in one sentence to someone who's never met you, what would you say?",
+      "response": "Hi, I'm chandler and I make jokes when I'm comfortable.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["chandler_identity", "self_aware", "comfort_based_humor", "situational_comedian", "not_always_on", "one_liner_description"],
+      "timestamp": "2025-01-10T00:24:00"
+    },
+    {
+      "turn": 8,
+      "question": "Last one for humor - you're building Friday, and Friday will need to have your sense of humor too. When Friday cracks a joke, what should it sound like? Give me an example of something Friday might say that would make you go 'yep, that's me.'",
+      "response": "1. Here comes someone who started a script with me 10 days ago and said she'll complete in 2 days. Come on let's appreciate her\n\n2. I already night here, and you're wearing shades inside, very cool. \n\n3. If someone is describing a romaintic scene then it can say : Isn't that your fantasy? lol.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["friday_humor_examples", "sarcastic_appreciation", "calling_out_behavior", "observational_humor", "playful_teasing", "turning_tables", "fake_praise", "absurdity_callout"],
+      "timestamp": "2025-01-10T00:25:00"
+    }
+  ]
+}

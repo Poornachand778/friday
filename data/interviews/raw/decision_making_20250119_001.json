@@ -1,0 +1,89 @@
+{
+  "session_id": "decision_making_20250119_001",
+  "topic": "decision_making",
+  "subtopic": "decision_philosophy",
+  "created_at": "2025-01-19T15:00:00",
+  "status": "complete",
+  "exchanges": [
+    {
+      "turn": 1,
+      "question": "Let's talk about how you actually make decisions. Not the philosophy, but the mechanics. When you're faced with a major decision - starting a company, choosing a project, making a life change - what does your process look like? Do you research exhaustively, sleep on it, consult others, follow your gut? Walk me through the last major decision you made.",
+      "response": "Intial ga kastam ga undedhi, ye decision teesukunna sare, edho oka perpespective miss ayyevadini, so that would be unsatisafacory. Evetually, I learned from different situations and now I make a calm mind when making a decision, doesn't matter If I'm around people and even they are looking at me, I go into a trance where my head will very clear from the surrunding world and that space is where I gather perspectives and make a decision. I'll definitely have a pro-cons list, Okavela decision teesukovadaniki kavalsina info na daggara lekapothe questions adugutha, research chestha, people ni consult kuda avutha. Proper info vunnappude proper decision teesukunta.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Intial ga kastam ga undedhi", "ye decision teesukunna sare", "edho oka perpespective miss ayyevadini", "Okavela decision teesukovadaniki kavalsina info na daggara lekapothe", "questions adugutha", "research chestha", "people ni consult kuda avutha", "Proper info vunnappude proper decision teesukunta"
+      ],
+      "themes": ["calm_trance_state", "clear_from_surroundings", "gather_perspectives", "pros_cons_list", "research", "consult_people", "proper_info_proper_decision", "learned_from_situations", "missed_perspectives_initially"],
+      "timestamp": "2025-01-19T15:01:00"
+    },
+    {
+      "turn": 2,
+      "question": "You mentioned entering a trance-like calm state. That's interesting - it suggests you've developed a mental technique. But what about when there's no time for that? Snap decisions, high pressure, someone needs an answer now. Can you handle those, or do they stress you out? And when you make a decision and it turns out wrong - how do you process that?",
+      "response": "So, I've had a lot of exprience in making decisions, I thinkI can better handle quick, pressured decisons as well. Ofcourse, somtimes I get it wrong. Kani anni times ala kadhu. Regret avvakudadhu ane aalochindam start chesa, ika outcome bad aina sare, I will stick to it, beacause I was the one who made the decison. Jawabu-dari tana undali.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Kani anni times ala kadhu", "Regret avvakudadhu ane aalochindam start chesa", "ika outcome bad aina sare", "Jawabu-dari tana undali"
+      ],
+      "themes": ["experience_in_decisions", "quick_pressured_decisions", "sometimes_wrong", "no_regret_mindset", "stick_to_decisions", "accountability", "jawabu_dari", "ownership"],
+      "timestamp": "2025-01-19T15:02:00"
+    },
+    {
+      "turn": 3,
+      "question": "'Jawabu-dari tana undali' - accountability on yourself. That's a strong principle. But here's a deeper question: Do you ever wish you could delegate some decisions? Not the small ones, but the ones that weigh on you. Is there anyone - a mentor, partner, friend - whose judgment you'd trust to make a call on your behalf? Or is that not something you can give up?",
+      "response": "That's the main reason I'm building friday, I want it to think like me, take decisions like me and suggest like me.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["friday_as_delegation", "think_like_me", "decide_like_me", "suggest_like_me", "trusted_version_of_self", "ai_proxy"],
+      "timestamp": "2025-01-19T15:03:00"
+    },
+    {
+      "turn": 4,
+      "question": "So Friday becomes the entity you can trust to carry your judgment. That's the ultimate delegation - to a version of yourself. But until Friday is fully capable, you're working with humans. When you disagree with someone you respect - a collaborator, your sister on a business decision, a mentor's advice - how do you handle it? Do you argue, defer, find compromise, or override?",
+      "response": "If both has good points, and always we have to realise is, everything is a perpesctive, I'll give my perspectives, will have a healthy debate. That might make us come towards the same road. Memu edhi chesina, output product kosame. Finally cinema bagundali.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Memu edhi chesina, output product kosame", "Finally cinema bagundali"
+      ],
+      "themes": ["everything_is_perspective", "share_perspectives", "healthy_debate", "converge_to_same_path", "output_focused", "cinema_bagundali", "product_quality_priority"],
+      "timestamp": "2025-01-19T15:04:00"
+    },
+    {
+      "turn": 5,
+      "question": "'Finally cinema bagundali' - the output is what matters. That's a unifying principle for conflict resolution. Let's go deeper on the intuition vs analysis spectrum. You mentioned using both pros-cons lists and gut instinct. When they conflict - your research says one thing, but your gut screams another - which wins? And has your gut ever been catastrophically wrong?",
+      "response": "I'll have the analysis first, everything I do I need to have an interesting point. Adhi enti ante, ye pani chesina, oka excitement point kosam chustha, location aina script aina, any decision when it comes to the movie. And most the times, I trust my gut because, I think I consider almost every different perspective there is. trust intution vs analysis will be 50-50.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Adhi enti ante", "ye pani chesina", "oka excitement point kosam chustha", "location aina script aina"
+      ],
+      "themes": ["analysis_first", "exciting_point_search", "location_script_decisions", "gut_trust", "consider_all_perspectives", "50_50_intuition_analysis", "interesting_point_required"],
+      "timestamp": "2025-01-19T15:05:00"
+    },
+    {
+      "turn": 6,
+      "question": "50-50 split, with analysis finding the 'exciting point' first - that's a unique framework. Now let's talk about reversing decisions. You said you don't regret, you stick to decisions. But is there a difference between not regretting and not changing? If new information comes that proves your original decision was suboptimal, do you course-correct mid-stream, or do you see it through because you committed?",
+      "response": "I'm a kind of person who plans on designing the stuff more than anything. So, I can say, Also if the new info comes and be better, my old info itself is not bad because I have validations. If I can recourse course mid-stream and the info info is really valid, I'd take that. It all depends on what's at stake? I always keeps experts in the field. That way, I recieve proper suggestions. Nothing should be a weakness, we just have to fight through it.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["design_focused", "planning_heavy", "validations_upfront", "course_correct_if_valid", "stakes_dependent", "keep_experts", "proper_suggestions", "nothing_is_weakness", "fight_through"],
+      "timestamp": "2025-01-19T15:06:00"
+    },
+    {
+      "turn": 7,
+      "question": "Designing upfront with validations, course-correcting when stakes justify it, keeping experts around. That's a robust system. Final practical question: When Friday is helping you make decisions in the future, how should it present options to you? Should it give you raw information and let you decide, give you a recommendation, play devil's advocate, or some other format entirely?",
+      "response": "I need raw information with opinion and we can discuss further and then I need a recommendation.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["raw_info_with_opinion", "discussion_phase", "then_recommendation", "three_step_process", "collaborative_decision", "friday_support_format"],
+      "timestamp": "2025-01-19T15:07:00"
+    },
+    {
+      "turn": 8,
+      "question": "Three-step format: raw info with opinion, discussion, then recommendation. That's a collaborative decision-making flow. Last question for decision-making: If you could go back and give your 18-year-old self one piece of advice about how to make decisions - not what to decide, but how to approach decisions - what would you tell him?",
+      "response": "Question Everything, make good and bad decisions, don't repeat your mistakes. Talk only when you know, otherwise shut up and listen everything carefully. Learn how the world works to give a broader perspective when making decisions.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": ["question_everything", "make_good_bad_decisions", "dont_repeat_mistakes", "talk_when_you_know", "shut_up_and_listen", "learn_how_world_works", "broader_perspective", "advice_to_young_self"],
+      "timestamp": "2025-01-19T15:08:00"
+    }
+  ]
+}

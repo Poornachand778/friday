@@ -1,0 +1,23 @@
+{
+  "sources": {
+    "iteration1": 242,
+    "tool_examples": 33,
+    "whatsapp": 600
+  },
+  "total_before_dedup": 875,
+  "total_after_dedup": 875,
+  "timestamp": "2026-01-07T07:05:29.261518+00:00",
+  "whatsapp_breakdown": {
+    "by_language": {
+      "te": 383,
+      "en": 217
+    },
+    "by_chat": {
+      "Asha Sis": 92,
+      "Gayatri 🧶": 85,
+      "Indu 💫": 70,
+      "Niha ➰": 224,
+      "Nikhila Maduri": 129
+    }
+  }
+}

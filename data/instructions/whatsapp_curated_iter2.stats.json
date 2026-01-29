@@ -1,0 +1,28 @@
+{
+  "total_raw": 10577,
+  "passed_filter": 6511,
+  "final_count": 350,
+  "telugu_transliterated": 4812,
+  "filter_reasons": {
+    "too_short": 3907,
+    "omitted_content": 159
+  },
+  "language_dist": {
+    "telugu_dominant": 2678,
+    "code_switched": 2053,
+    "english_only": 1699,
+    "english_dominant": 81
+  },
+  "chat_sources": {
+    "Asha Sis": 626,
+    "Gayatri \ud83e\uddf6": 711,
+    "Indu \ud83d\udcab": 503,
+    "Niha \u27b0": 2080,
+    "Nikhila Maduri": 1778,
+    "Samantha Vihari": 354,
+    "Sappy": 344,
+    "Shreya Aswal HR UC": 115
+  },
+  "target": 350,
+  "min_response_len": 15
+}
