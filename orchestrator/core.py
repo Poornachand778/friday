@@ -23,6 +23,7 @@ from orchestrator.config import OrchestratorConfig, get_config
 from orchestrator.context.contexts import ContextType, CONTEXTS
 from orchestrator.context.detector import ContextDetector
 from orchestrator.inference.local_llm import LLMClient, ChatMessage, ChatResponse
+from orchestrator.inference.router import GLMRouter, RouterDecision
 from orchestrator.memory.conversation import ConversationMemory
 from orchestrator.memory.context_builder import (
     ContextBuilder,
@@ -74,6 +75,7 @@ class FridayOrchestrator:
 
         # Core components
         self._llm_client: Optional[LLMClient] = None
+        self._router: Optional[GLMRouter] = None  # GLM-4.7-Flash router
         self._tool_registry: Optional[ToolRegistry] = None
         self._context_detector: Optional[ContextDetector] = None
         self._context_builder: Optional[ContextBuilder] = None
@@ -82,6 +84,9 @@ class FridayOrchestrator:
         self._sessions: Dict[str, ConversationMemory] = {}
         self._current_session_id: Optional[str] = None
         self._current_context: ContextType = ContextType.GENERAL
+
+        # Last routing decision (for debugging/inspection)
+        self._last_routing_decision: Optional[RouterDecision] = None
 
         # Initialization state
         self._initialized = False
@@ -107,8 +112,15 @@ class FridayOrchestrator:
 
         LOGGER.info("Initializing Friday Orchestrator...")
 
-        # Initialize LLM client
+        # Initialize LLM client (persona model - LLaMA 3.1 8B)
         self._llm_client = LLMClient(self.config.llm)
+
+        # Initialize GLM-4.7-Flash router (if enabled)
+        if self.config.router.enabled:
+            self._router = GLMRouter(self.config.router)
+            LOGGER.info("GLM-4.7-Flash router enabled")
+        else:
+            LOGGER.info("Router disabled, using keyword-based routing")
 
         # Initialize tool registry
         self._tool_registry = get_tool_registry()
@@ -135,6 +147,9 @@ class FridayOrchestrator:
 
         if self._llm_client:
             await self._llm_client.close()
+
+        if self._router:
+            await self._router.close()
 
         self._initialized = False
         LOGGER.info("Friday Orchestrator shutdown complete")
@@ -173,6 +188,14 @@ class FridayOrchestrator:
         """
         Process a chat message through the full pipeline.
 
+        Pipeline:
+        1. GLM-4.7-Flash Router (if enabled) → Routing decision
+        2. Context detection (informed by router)
+        3. Context building (with filtered tools from router)
+        4. LLaMA 3.1 8B → Response generation
+        5. Tool execution (if needed)
+        6. Memory storage
+
         Args:
             message: User's message
             session_id: Session to use (creates new if not exists)
@@ -198,12 +221,69 @@ class FridayOrchestrator:
             self._create_session()
             memory = self.current_session
 
-        # Detect context
-        new_context = self._context_detector.detect(
-            message=message,
-            location=location,
-            current_context=self._current_context,
-        )
+        # Step 1: Router analysis (if enabled)
+        routing_decision: Optional[RouterDecision] = None
+        tool_filter: Optional[List[str]] = None
+
+        if self._router and self.config.router.enabled:
+            try:
+                # Get conversation summary for router context
+                conversation_context = None
+                if memory and memory.turn_count > 0:
+                    recent_turns = memory.get_last_n_turns(n=3)
+                    if recent_turns:
+                        # Build simple summary from recent turns
+                        summary_parts = []
+                        for turn in recent_turns:
+                            summary_parts.append(f"User: {turn.user_message[:100]}")
+                            summary_parts.append(
+                                f"Friday: {turn.assistant_response[:100]}"
+                            )
+                        conversation_context = "\n".join(summary_parts)
+
+                routing_decision = await self._router.analyze(
+                    message=message,
+                    conversation_context=conversation_context,
+                    current_context=self._current_context.value,
+                )
+                self._last_routing_decision = routing_decision
+
+                LOGGER.info(
+                    "Router decision: %s/%s, tools=%s, confidence=%.2f",
+                    routing_decision.task_type.value,
+                    routing_decision.complexity.value,
+                    routing_decision.suggested_tools,
+                    routing_decision.confidence,
+                )
+
+                # Use router's suggested tools as filter
+                if routing_decision.suggested_tools:
+                    tool_filter = routing_decision.suggested_tools
+
+            except Exception as e:
+                LOGGER.warning("Router failed, falling back to default: %s", e)
+                routing_decision = None
+
+        # Step 2: Context detection (informed by router if available)
+        if routing_decision and routing_decision.confidence >= 0.8:
+            # Trust router's context suggestion
+            context_map = {
+                "writers_room": ContextType.WRITERS_ROOM,
+                "kitchen": ContextType.KITCHEN,
+                "storyboard": ContextType.STORYBOARD,
+                "general": ContextType.GENERAL,
+            }
+            new_context = context_map.get(
+                routing_decision.primary_context,
+                self._current_context,
+            )
+        else:
+            # Fall back to keyword-based detection
+            new_context = self._context_detector.detect(
+                message=message,
+                location=location,
+                current_context=self._current_context,
+            )
 
         if new_context != self._current_context:
             LOGGER.info(
@@ -214,7 +294,7 @@ class FridayOrchestrator:
             self._current_context = new_context
             memory.set_context(new_context.value)
 
-        # Build context for LLM
+        # Step 3: Build context for LLM (with tool filtering from router)
         context_config = CONTEXTS.get(
             self._current_context, CONTEXTS[ContextType.GENERAL]
         )
@@ -222,20 +302,26 @@ class FridayOrchestrator:
             user_message=message,
             conversation_memory=memory,
             context_type=self._current_context,
+            tool_filter=tool_filter,  # Pass router's suggested tools
         )
 
         LOGGER.debug(
-            "Built context: %d messages, %d tokens, %d LTM",
+            "Built context: %d messages, %d tokens, %d LTM, tools=%s",
             len(built_context.messages),
             built_context.token_estimate,
             built_context.ltm_count,
+            (
+                [t["function"]["name"] for t in built_context.tools]
+                if built_context.tools
+                else []
+            ),
         )
 
         # Stream response if requested
         if stream:
             return self._stream_response(built_context, memory, message, start_time)
 
-        # Get LLM response
+        # Step 4: Get LLM response (persona model)
         tool_calls_made = []
         tool_results = []
 
@@ -245,13 +331,18 @@ class FridayOrchestrator:
             stream=False,
         )
 
-        # Handle tool calls if any
+        # Step 5: Handle tool calls if any
         if response.has_tool_calls:
+            # Use router's expected_turns as max_iterations hint
+            max_iter = 5
+            if routing_decision and routing_decision.agent_mode:
+                max_iter = max(routing_decision.expected_turns, 5)
+
             tool_calls_made, tool_results, response = await self._handle_tool_calls(
-                response, built_context
+                response, built_context, max_iterations=max_iter
             )
 
-        # Store in memory
+        # Step 6: Store in memory
         turn = memory.add_turn(
             user_message=message,
             assistant_response=response.content,
@@ -412,7 +503,7 @@ class FridayOrchestrator:
             "active_sessions": len(self._sessions),
         }
 
-        # Check LLM
+        # Check LLM (persona model)
         if self._llm_client:
             try:
                 llm_healthy = await self._llm_client.health_check()
@@ -421,6 +512,23 @@ class FridayOrchestrator:
                 health["llm"] = f"error: {e}"
         else:
             health["llm"] = "not_initialized"
+
+        # Check router (GLM-4.7-Flash)
+        if self.config.router.enabled:
+            health["router"] = {
+                "enabled": True,
+                "provider": self.config.router.provider,
+                "model": self.config.router.model_name,
+                "cache_size": len(self._router._cache) if self._router else 0,
+            }
+            if self._last_routing_decision:
+                health["router"]["last_decision"] = {
+                    "task_type": self._last_routing_decision.task_type.value,
+                    "complexity": self._last_routing_decision.complexity.value,
+                    "confidence": self._last_routing_decision.confidence,
+                }
+        else:
+            health["router"] = {"enabled": False}
 
         # Check tool registry
         if self._tool_registry:
