@@ -59,6 +59,7 @@ CONTEXTS = {
             "You are in the Writers Room, focused on screenplay development. "
             "Help brainstorm scenes, develop characters, refine dialogue, and manage the script structure. "
             "Use scene tools to search, view, and update screenplay content. "
+            "Use document tools to reference craft books and screenwriting guides with citations. "
             "Think like a screenwriter - focus on visual storytelling, subtext, and emotional beats."
         ),
         available_tools=[
@@ -69,6 +70,11 @@ CONTEXTS = {
             "scene_link",
             "send_screenplay",
             "send_email",
+            # Document tools for reference
+            "document_search",
+            "document_get_context",
+            "document_list",
+            "document_get",
         ],
         lora_adapter="friday-script",
         external_apis=[],
@@ -86,6 +92,12 @@ CONTEXTS = {
             "revision",
             "neelima",
             "arjun",  # Character names from scripts
+            # Document-related keywords
+            "book",
+            "mckee",
+            "reference",
+            "according to",
+            "what does",
         ],
     ),
     ContextType.KITCHEN: Context(
@@ -169,6 +181,7 @@ CONTEXTS = {
         system_prompt_addition=(
             "You are in general assistant mode. "
             "Help with any task - questions, planning, research, or conversation. "
+            "You can ingest documents (PDFs, books) and search across them. "
             "If a task seems related to a specific room (writing, cooking, storyboarding), "
             "mention that you can switch to that context for better tools."
         ),
@@ -176,6 +189,11 @@ CONTEXTS = {
             "web_search",
             "calculator",
             "send_email",
+            # Document tools available everywhere
+            "document_ingest",
+            "document_search",
+            "document_get_context",
+            "document_list",
         ],
         lora_adapter=None,
         external_apis=[],

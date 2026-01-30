@@ -42,8 +42,9 @@ class ContextBuilder:
     1. Base system prompt (Friday's personality)
     2. Context-specific additions (room/mode specific)
     3. Relevant long-term memories
-    4. Conversation history
-    5. Current user message
+    4. Relevant document context (from ingested books/references)
+    5. Conversation history
+    6. Current user message
 
     Usage:
         builder = ContextBuilder(base_system_prompt="You are Friday...")
@@ -62,13 +63,18 @@ class ContextBuilder:
         base_system_prompt: str,
         max_context_tokens: int = 6000,
         max_ltm_memories: int = 5,
+        max_document_chunks: int = 2,
     ):
         self.base_system_prompt = base_system_prompt
         self.max_context_tokens = max_context_tokens
         self.max_ltm_memories = max_ltm_memories
+        self.max_document_chunks = max_document_chunks
 
         # LTM integration (lazy loaded)
         self._ltm_searcher = None
+
+        # Document manager (lazy loaded)
+        self._document_manager = None
 
     def build(
         self,
@@ -76,6 +82,7 @@ class ContextBuilder:
         conversation_memory: Optional[ConversationMemory] = None,
         context_type: ContextType = ContextType.GENERAL,
         include_ltm: bool = True,
+        include_documents: bool = True,
         tool_filter: Optional[List[str]] = None,
     ) -> BuiltContext:
         """
@@ -86,6 +93,7 @@ class ContextBuilder:
             conversation_memory: Conversation history
             context_type: Current context/room
             include_ltm: Whether to include relevant LTM memories
+            include_documents: Whether to include relevant document context
             tool_filter: Optional filter for available tools
 
         Returns:
@@ -116,7 +124,22 @@ class ContextBuilder:
                 token_estimate += len(ltm_content) // 4
                 ltm_count = ltm_content.count("\n") + 1
 
-        # 3. Add conversation history
+        # 3. Add relevant document context (for Writers Room / reference queries)
+        if include_documents and context_type in [
+            ContextType.WRITERS_ROOM,
+            ContextType.GENERAL,
+        ]:
+            doc_content = self._get_relevant_documents(user_message)
+            if doc_content:
+                messages.append(
+                    ChatMessage(
+                        role="system",
+                        content=f"[Reference Documents:\n{doc_content}]",
+                    )
+                )
+                token_estimate += len(doc_content) // 4
+
+        # 4. Add conversation history
         turn_count = 0
         if conversation_memory:
             history_budget = (
@@ -130,11 +153,11 @@ class ContextBuilder:
             turn_count = conversation_memory.active_turns
             token_estimate += sum(len(m.content) // 4 for m in history_messages)
 
-        # 4. Add current user message
+        # 5. Add current user message
         messages.append(ChatMessage(role="user", content=user_message))
         token_estimate += len(user_message) // 4
 
-        # 5. Get available tools
+        # 6. Get available tools
         tools = self._get_tools(context_config, tool_filter)
 
         return BuiltContext(
@@ -187,6 +210,65 @@ class ContextBuilder:
 
         except Exception as e:
             LOGGER.debug("LTM search failed: %s", e)
+            return ""
+
+    def _get_relevant_documents(self, query: str) -> str:
+        """Get relevant document context for the query"""
+        import asyncio
+
+        try:
+            if self._document_manager is None:
+                try:
+                    from documents import get_document_manager
+
+                    self._document_manager = get_document_manager()
+                except ImportError:
+                    LOGGER.debug("Document manager not available")
+                    return ""
+
+            # Check if document manager is initialized
+            if not self._document_manager._initialized:
+                # Can't do async init here, skip
+                LOGGER.debug("Document manager not initialized")
+                return ""
+
+            # Get document context (runs async in sync context)
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # Already in async context, use nest_asyncio pattern or skip
+                    LOGGER.debug("Cannot run async in running loop, skipping documents")
+                    return ""
+                context, citations = loop.run_until_complete(
+                    self._document_manager.get_context_for_query(
+                        query=query,
+                        max_chunks=self.max_document_chunks,
+                        max_chars=1500,  # Limit document context size
+                    )
+                )
+            except RuntimeError:
+                # No event loop, create one
+                context, citations = asyncio.run(
+                    self._document_manager.get_context_for_query(
+                        query=query,
+                        max_chunks=self.max_document_chunks,
+                        max_chars=1500,
+                    )
+                )
+
+            if not context:
+                return ""
+
+            # Format with citations
+            parts = [context]
+            if citations:
+                citation_list = ", ".join(c.format_inline() for c in citations[:3])
+                parts.append(f"\nSources: {citation_list}")
+
+            return "\n".join(parts)
+
+        except Exception as e:
+            LOGGER.debug("Document search failed: %s", e)
             return ""
 
     def _get_tools(

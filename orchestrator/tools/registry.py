@@ -122,6 +122,9 @@ class ToolRegistry:
 
     def _register_builtin_tools(self) -> None:
         """Register built-in tools"""
+        # Document Processing Tools
+        self._register_document_tools()
+
         # Scene Manager Tools
         self.register(
             Tool(
@@ -528,6 +531,295 @@ class ToolRegistry:
             success=False,
             error="Image generation not yet implemented. Requires image generation API.",
         )
+
+    def _register_document_tools(self) -> None:
+        """Register document processing tools"""
+        self.register(
+            Tool(
+                name="document_search",
+                description="Search across ingested documents (books, screenplays, references). Returns relevant passages with inline citations.",
+                parameters={
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "Natural language search query (e.g., 'character arc principles', 'three-act structure')",
+                        },
+                        "document_id": {
+                            "type": "string",
+                            "description": "Limit search to specific document (optional)",
+                        },
+                        "document_type": {
+                            "type": "string",
+                            "enum": [
+                                "book",
+                                "screenplay",
+                                "article",
+                                "manual",
+                                "reference",
+                            ],
+                            "description": "Filter by document type (optional)",
+                        },
+                        "top_k": {
+                            "type": "integer",
+                            "description": "Number of results (default: 5, max: 20)",
+                            "default": 5,
+                        },
+                    },
+                    "required": ["query"],
+                },
+                handler=self._handle_document_search,
+                category="documents",
+            )
+        )
+
+        self.register(
+            Tool(
+                name="document_get_context",
+                description="Get document context for answering questions. Returns formatted passages with citations, optimized for LLM consumption.",
+                parameters={
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "The question or topic to find context for",
+                        },
+                        "document_id": {
+                            "type": "string",
+                            "description": "Limit to specific document (optional)",
+                        },
+                        "max_chunks": {
+                            "type": "integer",
+                            "description": "Maximum chunks to include (default: 3)",
+                            "default": 3,
+                        },
+                    },
+                    "required": ["query"],
+                },
+                handler=self._handle_document_get_context,
+                category="documents",
+            )
+        )
+
+        self.register(
+            Tool(
+                name="document_list",
+                description="List all ingested documents with metadata.",
+                parameters={
+                    "type": "object",
+                    "properties": {
+                        "document_type": {
+                            "type": "string",
+                            "enum": [
+                                "book",
+                                "screenplay",
+                                "article",
+                                "manual",
+                                "reference",
+                            ],
+                            "description": "Filter by document type (optional)",
+                        },
+                        "project": {
+                            "type": "string",
+                            "description": "Filter by project (optional)",
+                        },
+                    },
+                },
+                handler=self._handle_document_list,
+                category="documents",
+            )
+        )
+
+        self.register(
+            Tool(
+                name="document_get",
+                description="Get detailed information about a specific document.",
+                parameters={
+                    "type": "object",
+                    "properties": {
+                        "document_id": {
+                            "type": "string",
+                            "description": "The document UUID",
+                        },
+                    },
+                    "required": ["document_id"],
+                },
+                handler=self._handle_document_get,
+                category="documents",
+            )
+        )
+
+        self.register(
+            Tool(
+                name="document_ingest",
+                description="Ingest a PDF document for conversational access. Processes with OCR and creates searchable chunks.",
+                parameters={
+                    "type": "object",
+                    "properties": {
+                        "file_path": {
+                            "type": "string",
+                            "description": "Path to the PDF file",
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "Document title",
+                        },
+                        "author": {
+                            "type": "string",
+                            "description": "Author name (optional)",
+                        },
+                        "document_type": {
+                            "type": "string",
+                            "enum": [
+                                "book",
+                                "screenplay",
+                                "article",
+                                "manual",
+                                "reference",
+                            ],
+                            "default": "book",
+                        },
+                    },
+                    "required": ["file_path", "title"],
+                },
+                handler=self._handle_document_ingest,
+                category="documents",
+            )
+        )
+
+    # Document Tool Handlers
+    def _handle_document_search(
+        self,
+        query: str,
+        document_id: str = None,
+        document_type: str = None,
+        top_k: int = 5,
+    ) -> ToolResult:
+        """Handle document_search tool"""
+        import asyncio
+
+        try:
+            from mcp.documents import service
+
+            result = asyncio.get_event_loop().run_until_complete(
+                service.document_search(
+                    query=query,
+                    document_id=document_id,
+                    document_type=document_type,
+                    top_k=top_k,
+                )
+            )
+            return ToolResult(
+                success=result.get("success", False),
+                data=result,
+                error=result.get("error"),
+            )
+        except Exception as e:
+            LOGGER.error("Document search failed: %s", e)
+            return ToolResult(success=False, error=str(e))
+
+    def _handle_document_get_context(
+        self,
+        query: str,
+        document_id: str = None,
+        max_chunks: int = 3,
+    ) -> ToolResult:
+        """Handle document_get_context tool"""
+        import asyncio
+
+        try:
+            from mcp.documents import service
+
+            result = asyncio.get_event_loop().run_until_complete(
+                service.document_get_context(
+                    query=query,
+                    document_id=document_id,
+                    max_chunks=max_chunks,
+                )
+            )
+            return ToolResult(
+                success=result.get("success", False),
+                data=result,
+                error=result.get("error"),
+            )
+        except Exception as e:
+            LOGGER.error("Document get context failed: %s", e)
+            return ToolResult(success=False, error=str(e))
+
+    def _handle_document_list(
+        self,
+        document_type: str = None,
+        project: str = None,
+    ) -> ToolResult:
+        """Handle document_list tool"""
+        import asyncio
+
+        try:
+            from mcp.documents import service
+
+            result = asyncio.get_event_loop().run_until_complete(
+                service.document_list(
+                    document_type=document_type,
+                    project=project,
+                )
+            )
+            return ToolResult(
+                success=result.get("success", False),
+                data=result,
+                error=result.get("error"),
+            )
+        except Exception as e:
+            LOGGER.error("Document list failed: %s", e)
+            return ToolResult(success=False, error=str(e))
+
+    def _handle_document_get(self, document_id: str) -> ToolResult:
+        """Handle document_get tool"""
+        import asyncio
+
+        try:
+            from mcp.documents import service
+
+            result = asyncio.get_event_loop().run_until_complete(
+                service.document_get(document_id=document_id)
+            )
+            return ToolResult(
+                success=result.get("success", False),
+                data=result,
+                error=result.get("error"),
+            )
+        except Exception as e:
+            LOGGER.error("Document get failed: %s", e)
+            return ToolResult(success=False, error=str(e))
+
+    def _handle_document_ingest(
+        self,
+        file_path: str,
+        title: str,
+        author: str = None,
+        document_type: str = "book",
+    ) -> ToolResult:
+        """Handle document_ingest tool"""
+        import asyncio
+
+        try:
+            from mcp.documents import service
+
+            result = asyncio.get_event_loop().run_until_complete(
+                service.document_ingest(
+                    file_path=file_path,
+                    title=title,
+                    author=author,
+                    document_type=document_type,
+                )
+            )
+            return ToolResult(
+                success=result.get("success", False),
+                data=result,
+                error=result.get("error"),
+            )
+        except Exception as e:
+            LOGGER.error("Document ingest failed: %s", e)
+            return ToolResult(success=False, error=str(e))
 
 
 # Singleton registry
