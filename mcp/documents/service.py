@@ -384,3 +384,158 @@ async def document_delete(document_id: str) -> Dict[str, Any]:
     except Exception as e:
         LOGGER.exception("Delete document failed")
         return {"error": str(e), "success": False}
+
+
+# =============================================================================
+# Cloud Sync Functions (for server deployment)
+# =============================================================================
+
+_sync_manager: Optional[Any] = None
+
+
+async def _get_sync_manager():
+    """Get or create the CloudSyncManager singleton."""
+    global _sync_manager
+    if _sync_manager is None:
+        import os
+        from documents.storage.cloud_sync import create_sync_manager
+
+        # Get config from environment
+        backend = os.getenv("FRIDAY_STORAGE_BACKEND", "local")
+        inbox_path = os.getenv("FRIDAY_INBOX_PATH", "documents/data/inbox")
+        s3_bucket = os.getenv("FRIDAY_S3_BUCKET", "")
+        s3_prefix = os.getenv("FRIDAY_S3_PREFIX", "friday-inbox/")
+
+        manager = await get_document_manager()
+
+        _sync_manager = create_sync_manager(
+            backend=backend,
+            inbox_path=inbox_path,
+            s3_bucket=s3_bucket,
+            s3_prefix=s3_prefix,
+            document_manager=manager,
+        )
+
+    return _sync_manager
+
+
+async def inbox_scan() -> Dict[str, Any]:
+    """
+    Scan the document inbox and process new files.
+
+    For server deployment: scans S3 bucket or shared folder for new PDFs.
+    For local deployment: scans local inbox folder.
+
+    Returns:
+        List of newly processed files
+    """
+    try:
+        sync = await _get_sync_manager()
+        new_files = await sync.sync_once()
+
+        return {
+            "success": True,
+            "files_processed": len(new_files),
+            "files": [
+                {
+                    "filename": f.filename,
+                    "size": f.size,
+                    "extension": f.extension,
+                }
+                for f in new_files
+            ],
+        }
+    except Exception as e:
+        LOGGER.exception("Inbox scan failed")
+        return {"error": str(e), "success": False}
+
+
+async def inbox_list() -> Dict[str, Any]:
+    """
+    List files in the inbox waiting to be processed.
+
+    Returns:
+        List of pending files
+    """
+    try:
+        sync = await _get_sync_manager()
+        pending = await sync.list_pending()
+
+        return {
+            "success": True,
+            "count": len(pending),
+            "files": [
+                {
+                    "filename": f.filename,
+                    "size": f.size,
+                    "extension": f.extension,
+                    "last_modified": f.last_modified.isoformat(),
+                }
+                for f in pending
+            ],
+        }
+    except Exception as e:
+        LOGGER.exception("List inbox failed")
+        return {"error": str(e), "success": False}
+
+
+async def inbox_status() -> Dict[str, Any]:
+    """
+    Get the status of the inbox sync system.
+
+    Returns:
+        Sync configuration and status
+    """
+    try:
+        sync = await _get_sync_manager()
+        status = sync.get_status()
+
+        return {
+            "success": True,
+            **status,
+        }
+    except Exception as e:
+        LOGGER.exception("Get inbox status failed")
+        return {"error": str(e), "success": False}
+
+
+async def inbox_start_watch() -> Dict[str, Any]:
+    """
+    Start automatic inbox watching (background polling).
+
+    Returns:
+        Status of watch start
+    """
+    try:
+        sync = await _get_sync_manager()
+        await sync.start()
+
+        return {
+            "success": True,
+            "watching": True,
+            "poll_interval": sync.config.poll_interval_seconds,
+            "backend": sync.config.backend.value,
+        }
+    except Exception as e:
+        LOGGER.exception("Start inbox watch failed")
+        return {"error": str(e), "success": False}
+
+
+async def inbox_stop_watch() -> Dict[str, Any]:
+    """
+    Stop automatic inbox watching.
+
+    Returns:
+        Status of watch stop
+    """
+    try:
+        sync = await _get_sync_manager()
+        await sync.stop()
+
+        return {
+            "success": True,
+            "watching": False,
+        }
+    except Exception as e:
+        LOGGER.exception("Stop inbox watch failed")
+        return {"error": str(e), "success": False}

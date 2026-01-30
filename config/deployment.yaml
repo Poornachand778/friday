@@ -1,0 +1,236 @@
+# Friday AI Deployment Configuration
+# ==================================
+#
+# This file configures Friday for different deployment scenarios.
+# Copy the appropriate section to your .env or config files.
+
+# ============================================================================
+# LOCAL MODE (Development / Mac-based)
+# ============================================================================
+# Friday runs on your Mac, has direct file system access.
+# Best for: Development, personal use on single machine.
+
+local:
+  # File access
+  file_access:
+    mode: "direct"  # Direct file system access
+    base_paths:
+      - "/Users/poornachandkeerthi"
+      - "~/Documents"
+      - "~/Downloads"
+
+  # Document processing
+  documents:
+    storage_backend: "local"
+    inbox_path: "~/Documents/Friday-Inbox"  # Drop PDFs here
+    processed_path: "documents/data/raw"
+    auto_ingest: true
+
+  # Voice pipeline
+  voice:
+    mode: "local"
+    stt_engine: "faster_whisper"
+    tts_engine: "xtts_v2"
+    wake_word: "openwakeword"
+
+  # LLM inference
+  inference:
+    mode: "local"  # or "sagemaker"
+    local_model_path: "models/friday-lora"
+    device: "mps"  # Apple Silicon
+
+  # Database
+  database:
+    url: "sqlite:///friday.db"
+
+
+# ============================================================================
+# SERVER MODE (Cloud Deployment)
+# ============================================================================
+# Friday runs on remote server (AWS EC2, home server, etc.)
+# User interacts via: API, voice devices, or messaging (Telegram/WhatsApp)
+
+server:
+  # File access - NO direct access to user's machine
+  file_access:
+    mode: "cloud"  # Via S3 or shared storage
+
+  # Document processing
+  documents:
+    storage_backend: "s3"
+    s3_bucket: "friday-documents"
+    s3_region: "us-east-1"
+    s3_prefix: "inbox/"
+
+    # Sync behavior
+    poll_interval_seconds: 60
+    auto_ingest: true
+    auto_delete_after_process: false  # Keep originals in S3
+
+  # Voice pipeline (hybrid: voice capture local, processing server)
+  voice:
+    mode: "remote"
+    # Voice daemon runs locally, sends audio to server
+    api_endpoint: "https://friday.example.com/voice"
+
+  # LLM inference
+  inference:
+    mode: "sagemaker"  # or "local" with GPU
+    sagemaker_endpoint: "friday-endpoint"
+    # For local GPU server:
+    # mode: "local"
+    # device: "cuda"
+
+  # Database
+  database:
+    url: "postgresql://friday:password@localhost/friday"
+    # For production, use RDS/managed Postgres
+
+
+# ============================================================================
+# HYBRID MODE (Recommended for End Goal)
+# ============================================================================
+# Voice/camera processing: Local on Mac/edge devices
+# LLM inference: Server with GPU
+# File access: Via shared cloud storage (S3)
+
+hybrid:
+  # Edge devices (Mac, Raspberry Pi, etc.)
+  edge:
+    components:
+      - "wake_word"      # Local wake word detection
+      - "stt"            # Speech-to-text (Whisper)
+      - "tts"            # Text-to-speech (XTTS)
+      - "camera"         # Visual capture
+
+    # Send processed audio/text to server
+    server_endpoint: "https://friday.example.com/api"
+
+  # Server
+  server:
+    components:
+      - "llm_inference"   # Main LLM processing
+      - "memory"          # LTM, knowledge graph
+      - "documents"       # Document processing
+      - "orchestrator"    # Main coordination
+
+    # GPU for inference
+    inference:
+      device: "cuda"
+      model: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+      lora_adapter: "models/friday-lora"
+
+  # Shared storage (accessible by both edge and server)
+  storage:
+    documents:
+      backend: "s3"
+      bucket: "friday-documents"
+
+    audio_logs:
+      backend: "s3"
+      bucket: "friday-audio"
+
+    # Alternative: iCloud (if server can mount it)
+    # backend: "icloud"
+    # path: "~/Library/Mobile Documents/com~apple~CloudDocs/Friday"
+
+
+# ============================================================================
+# FILE TRANSFER WORKFLOWS
+# ============================================================================
+
+file_workflows:
+  # Method 1: S3 Direct Upload
+  # User uploads via: AWS Console, CLI, or app
+  s3_direct:
+    bucket: "friday-documents"
+    upload_paths:
+      - "inbox/pdfs/"      # PDFs to process
+      - "inbox/scripts/"   # Screenplay files
+
+  # Method 2: API Upload
+  # User uploads via Friday's HTTP API
+  api_upload:
+    endpoint: "/api/documents/upload"
+    max_file_size: "50MB"
+    allowed_types: [".pdf", ".epub", ".txt", ".md", ".fountain"]
+
+  # Method 3: Clawdbot Integration
+  # User tells Clawdbot to sync file to shared folder
+  clawdbot:
+    # 1. User: "Hey Clawdbot, sync McKee_Story.pdf to Friday inbox"
+    # 2. Clawdbot copies file to: ~/Library/Mobile Documents/.../Friday-Inbox/
+    # 3. iCloud syncs to server (if mounted) OR
+    # 4. Clawdbot uploads to S3 bucket
+
+    # For S3 workflow, add to Clawdbot's tools:
+    # sync_to_friday(file_path) → uploads to s3://friday-documents/inbox/
+
+  # Method 4: Telegram/WhatsApp File Send
+  # User sends PDF to Friday bot
+  messaging:
+    # Friday bot receives file → saves to documents inbox → processes
+    telegram_bot: "@FridayAIBot"
+    whatsapp: "connected via Clawdbot"
+
+
+# ============================================================================
+# EXAMPLE: AWS EC2 SERVER SETUP
+# ============================================================================
+
+aws_deployment:
+  # EC2 Instance
+  instance:
+    type: "g5.xlarge"  # 24GB VRAM, good for LLaMA 8B
+    ami: "Deep Learning AMI (Ubuntu)"
+
+  # S3 Buckets
+  s3:
+    documents: "friday-{account_id}-documents"
+    audio: "friday-{account_id}-audio"
+    models: "friday-{account_id}-models"
+
+  # IAM Role
+  iam:
+    role: "FridayServerRole"
+    policies:
+      - "S3 read/write on friday-* buckets"
+      - "SageMaker endpoint invoke"
+      - "CloudWatch logs"
+
+  # Networking
+  vpc:
+    public_ip: true  # For API access
+    security_group:
+      - "22 (SSH from your IP)"
+      - "443 (HTTPS for API)"
+      - "8000 (Friday API)"
+
+
+# ============================================================================
+# ENVIRONMENT VARIABLES (for .env file)
+# ============================================================================
+
+env_variables:
+  # Server mode
+  FRIDAY_MODE: "server"  # local, server, hybrid
+
+  # Database
+  DATABASE_URL: "postgresql://friday:password@localhost/friday"
+
+  # S3
+  AWS_REGION: "us-east-1"
+  FRIDAY_S3_BUCKET: "friday-documents"
+  FRIDAY_S3_PREFIX: "inbox/"
+
+  # LLM
+  MODEL_NAME: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+  HUGGINGFACE_TOKEN: "hf_..."
+
+  # SageMaker (if using)
+  SAGEMAKER_ENDPOINT: "friday-endpoint"
+
+  # API
+  FRIDAY_API_HOST: "0.0.0.0"
+  FRIDAY_API_PORT: "8000"
+  FRIDAY_API_SECRET: "your-secret-key"

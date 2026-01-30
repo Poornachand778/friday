@@ -67,6 +67,13 @@ from documents.pipeline.chunker import SemanticChunker
 
 # Storage
 from documents.storage.document_store import DocumentStore
+from documents.storage.cloud_sync import (
+    CloudSyncManager,
+    SyncConfig,
+    StorageBackend,
+    CloudFile,
+    create_sync_manager,
+)
 
 # Retrieval
 from documents.retrieval.searcher import DocumentSearcher
@@ -102,4 +109,10 @@ __all__ = [
     "DocumentStore",
     "DocumentSearcher",
     "CitationTracker",
+    # Cloud Sync
+    "CloudSyncManager",
+    "SyncConfig",
+    "StorageBackend",
+    "CloudFile",
+    "create_sync_manager",
 ]
