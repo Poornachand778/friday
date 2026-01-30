@@ -1,0 +1,89 @@
+# Document Processing Configuration
+# DeepSeek-OCR 2 integration for book and document understanding
+
+ocr:
+  model: "deepseek-ai/DeepSeek-OCR-2"
+  quantization: "4bit"                # 4bit (8GB VRAM), 8bit (12GB), none (16GB+)
+  device: "cuda"                      # cuda, cpu, mps
+  use_flash_attention: true
+  image_dpi: 300
+  max_batch_size: 4
+  timeout_seconds: 60.0
+
+  # Fallback when local GPU unavailable
+  fallback_enabled: true
+  fallback_provider: "google"         # google, azure, aws
+  # fallback_api_key set via DOCUMENT_OCR_FALLBACK_API_KEY env var
+
+  # Quality settings
+  retry_on_low_confidence: true
+  low_confidence_threshold: 0.5
+
+chunking:
+  strategy: "semantic"                # semantic, fixed, hybrid
+  min_chars: 500
+  max_chars: 2000
+  overlap_chars: 100
+  respect_chapters: true
+  respect_sections: true
+  detect_headers: true
+
+  # Screenplay-specific
+  screenplay_mode: false              # Enable for scene-based chunking
+  dialogue_grouping: true             # Keep character dialogues together
+
+embedding:
+  model: "paraphrase-multilingual-mpnet-base-v2"  # Same as LTM for consistency
+  embedding_dim: 768
+  batch_size: 32
+  normalize: true
+
+  # GPU memory management
+  share_gpu_with_ocr: false           # Unload OCR before embedding if false
+
+storage:
+  db_path: "documents/data/documents.db"
+  documents_dir: "documents/data/raw"
+  images_dir: "documents/data/images"
+
+  # Cache settings
+  cache_enabled: true
+  cache_ttl_hours: 24
+
+  # Cleanup
+  auto_cleanup_images: true           # Delete page images after processing
+  max_storage_gb: 10.0
+
+retrieval:
+  top_k: 10
+  min_similarity: 0.5
+  use_hybrid_search: true             # Combine vector + keyword search
+  keyword_weight: 0.3
+
+  # Citations
+  include_citations: true
+  citation_style: "inline"            # inline, footnote, endnote
+  max_quote_length: 200
+
+integration:
+  # Long-Term Memory
+  store_in_ltm: true                  # Create LTM entries for document chunks
+  ltm_memory_type: "fact"
+  ltm_importance: 0.7
+
+  # Knowledge Graph
+  extract_triplets: true              # Feed chunks to TripletExtractor
+  triplet_confidence: 0.6
+  add_document_node: true             # Add book as entity in graph
+
+  # Project linking
+  auto_associate_project: true
+
+# Processing settings
+max_concurrent_pages: 4
+batch_processing_enabled: true
+progress_callback_interval: 10        # Report progress every N pages
+
+# Logging
+log_level: "INFO"
+log_processing_details: true
