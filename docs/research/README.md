@@ -59,6 +59,7 @@ Brief description of what this is.
 
 | Date | Research | Status | Implementation |
 |------|----------|--------|----------------|
+| 2025-01-29 | [Upskill](UPSKILL_ANALYSIS.md) | **Adopt Immediately** | GLM router + persona skills |
 | 2025-01-29 | [TiDAR](TIDAR_ANALYSIS.md) | Future Consideration | Track for voice latency optimization |
 | 2025-01-29 | [Supermemory](SUPERMEMORY_ANALYSIS.md) | Adopted | memory/layers/*, dual timestamps |
 | 2025-01-29 | [Cognee](COGNEE_ANALYSIS.md) | Adopted | memory/layers/knowledge_graph.py |
