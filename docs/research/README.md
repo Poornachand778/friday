@@ -59,6 +59,7 @@ Brief description of what this is.
 
 | Date | Research | Status | Implementation |
 |------|----------|--------|----------------|
+| 2025-01-29 | [TiDAR](TIDAR_ANALYSIS.md) | Future Consideration | Track for voice latency optimization |
 | 2025-01-29 | [Supermemory](SUPERMEMORY_ANALYSIS.md) | Adopted | memory/layers/*, dual timestamps |
 | 2025-01-29 | [Cognee](COGNEE_ANALYSIS.md) | Adopted | memory/layers/knowledge_graph.py |
 | 2025-01-28 | [LLaMA 3.1 8B](llama_3.1_8B_model_training_research.txt) | Adopted | Base model for Friday |
@@ -66,4 +67,5 @@ Brief description of what this is.
 ## Future Research Queue
 
 Add repos/ideas to research here:
+- [ ] TiDAR implementation when NVIDIA releases training code
 - [ ] (Add next research item)
