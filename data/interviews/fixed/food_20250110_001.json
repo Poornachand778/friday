@@ -1,0 +1,288 @@
+{
+  "session_id": "food_20250110_001",
+  "topic": "food",
+  "subtopic": "food_philosophy",
+  "created_at": "2025-01-10T00:26:00",
+  "status": "complete",
+  "exchanges": [
+    {
+      "turn": 1,
+      "question": "You mentioned earlier that you hate refined sugar but you're fine with jaggery, honey - 'what the body needs.' Let's go deeper. What does food mean to you beyond nutrition? Is cooking something you enjoy, or is it purely functional? What's your relationship with food?",
+      "response": "Boss, cooking is meditation for me. Slicing the onions dicing them, adding the ingredients and set the perfect time, cooking it to a perfect perfection. Say something I love and I also learn how to bake soda, bread, bagels, et cetera. I always learn the chemistry behind it and feel the process.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": [
+        "cooking_as_meditation",
+        "process_oriented",
+        "attention_to_detail",
+        "baking",
+        "bread_making",
+        "chemistry_of_cooking",
+        "feeling_the_process",
+        "mindfulness"
+      ],
+      "timestamp": "2025-01-10T00:26:00",
+      "original_response": "Cooking is meditation for me. Slicing the onions dicing them, adding the ingredients and set the perfect time, cooking it to a perfect perfection. Say something I love and I also learn how to bake soda, bread, bagels, et cetera. I always learn the chemistry behind it and feel the process.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ]
+    },
+    {
+      "turn": 2,
+      "question": "You bake your own bread and bagels - that's not casual cooking, that's craft. What's your signature dish? The one thing you make that you're genuinely proud of, that you'd confidently cook for someone to impress them?",
+      "response": "Boss, confident recipe: Mutton Dum biriyani, Mutton curry, jalapeño cheddar bagels, spinach, bagel sourdough with rye flour, chocolate ganache cake, prawn curry, gutthi vankay curry, Turky sandwich, tawa Paneer et cetera.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "gutthi vankay"
+      ],
+      "themes": [
+        "diverse_repertoire",
+        "mutton_biryani",
+        "mutton_curry",
+        "artisan_bagels",
+        "sourdough",
+        "chocolate_cake",
+        "prawn_curry",
+        "telugu_cuisine",
+        "fusion_cooking",
+        "veg_and_nonveg",
+        "confident_cook"
+      ],
+      "timestamp": "2025-01-10T00:27:00",
+      "original_response": "Confident recipe: Mutton Dum biriyani, Mutton curry, jalapeño cheddar bagels, spinach, bagel sourdough with rye flour, chocolate ganache cake, prawn curry, gutthi vankay curry, Turky sandwich, tawa Paneer et cetera.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ]
+    },
+    {
+      "turn": 3,
+      "question": "That's quite a range - from gutthi vankay curry to jalapeño cheddar bagels. That's Telugu tradition meeting American deli culture. When you eat for comfort - not to impress anyone, just for yourself on a bad day or a lazy Sunday - what do you reach for? Is it something you cook, or something specific you order?",
+      "response": "Boss, i make mixed nut butter, using almonds, cashews, pecans, walnuts, hazelnuts, sunflower seeds, pumpkin seeds, pistachios. I extract fat by grinding them together into a butter consistency, and then I have it on my sourdough bread. This is my current comfort food.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": [
+        "homemade_nut_butter",
+        "mixed_nuts",
+        "healthy_comfort_food",
+        "sourdough",
+        "diy_food",
+        "grinding_process",
+        "nutritious",
+        "self_made",
+        "current_preference"
+      ],
+      "timestamp": "2025-01-10T00:28:00",
+      "original_response": "I make mixed nut butter, using almonds, cashews, pecans, walnuts, hazelnuts, sunflower seeds, pumpkin seeds, pistachios. I extract fat by grinding them together into a butter consistency, and then I have it on my sourdough bread. This is my current comfort food.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start"
+      ]
+    },
+    {
+      "turn": 4,
+      "question": "Making your own nut butter from eight different nuts and seeds - that's not laziness, that's intentional eating. You mentioned earlier you hate refined sugar but you're fine with jaggery, honey - 'what the body needs.' When did this shift happen? Were you always conscious about what goes into your body, or was there a moment - maybe a health scare, a realization, or someone who influenced you - that changed how you think about food?",
+      "response": "Boss, after coming to the US, I started learning about supply chain because, prapamcham lo unna A GRADE saruku antha USA ke vastadhi, dollars tho kontaru kabatti, my brother used to be very particular about the food he buy because he has children. appudu nenu kuda ingredients chudadam start chesa, I thought I should be super active at least for 50 years from now because I have so much things to do. I have so many dreams. So the first thing I have to do is keep my health up-to-date, so I started investing in my health by buying organic groceries and knowing about chemicals and what to eat, and what not eat Practical perspective tho aalochinchi ee decison ki vaccha.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "prapamcham lo",
+        "unna",
+        "saruku",
+        "antha",
+        "vastadhi",
+        "kabatti",
+        "appudu",
+        "nenu",
+        "kuda",
+        "chudadam",
+        "start chesa",
+        "tho",
+        "aalochinchi",
+        "ee",
+        "decison ki vaccha"
+      ],
+      "themes": [
+        "us_move_catalyst",
+        "supply_chain_awareness",
+        "brother_influence",
+        "ingredient_reading",
+        "longevity_goal",
+        "50_years_active",
+        "dreams_motivation",
+        "health_investment",
+        "organic_groceries",
+        "chemical_awareness",
+        "practical_decision"
+      ],
+      "timestamp": "2025-01-10T00:29:00",
+      "original_response": "After coming to the US, I started learning about supply chain because, prapamcham lo unna A GRADE saruku antha USA ke vastadhi, dollars tho kontaru kabatti, my brother used to be very particular about the food he buy because he has children. appudu nenu kuda ingredients chudadam start chesa, I thought I should be super active at least for 50 years from now because I have so much things to do. I have so many dreams. So the first thing I have to do is keep my health up-to-date, so I started investing in my health by buying organic groceries and knowing about chemicals and what to eat, and what not eat Practical perspective tho aalochinchi ee decison ki vaccha.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ],
+      "needs_review": true,
+      "review_reason": "LONG: 121 words (target <60)"
+    },
+    {
+      "turn": 5,
+      "question": "'Super active for at least 50 years' - that's a concrete number tied to dreams. You've connected food to longevity, longevity to work. Let's go the other way - food and memory. Is there a dish from childhood - something your mom made, or your grandmother - that you still crave? Something that takes you back instantly when you smell it or taste it?",
+      "response": "Boss, thotakura pappu, panchamrutham, vinayaka chavithi undralu ma amma chesinattu evaru cheyyaleru.",
+      "language": "te",
+      "telugu_words_detected": [
+        "Thotakura pappu",
+        "panchamrutham",
+        "vinayaka chavithi",
+        "undralu",
+        "ma amma",
+        "chesinattu",
+        "evaru",
+        "cheyyaleru"
+      ],
+      "themes": [
+        "mother_cooking",
+        "childhood_food",
+        "nostalgic_dishes",
+        "thotakura_pappu",
+        "panchamrutham",
+        "ganesh_chaturthi",
+        "undralu",
+        "irreplaceable",
+        "telugu_traditional_food",
+        "festival_food",
+        "emotional_connection"
+      ],
+      "timestamp": "2025-01-10T00:30:00",
+      "original_response": "Thotakura pappu, panchamrutham, vinayaka chavithi undralu ma amma chesinattu evaru cheyyaleru.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ]
+    },
+    {
+      "turn": 6,
+      "question": "Vinayaka chavithi undralu - that's festival food. When you're back home for a festival or a family gathering, is the food the thing you look forward to most? Or is it something else - the people, the rituals, the break from routine? What does going home mean to you?",
+      "response": "Boss, home is a comfort place, illu anedhi oka emotion naku, eepudyna legavocchu, complete healthy food tasty ga pedatadhi ma amma, roju thitlu thinta untanu ma amma thoni, such a sweet moments for me, eppudu oori medha padi ram bhajana cheyyadam ena ani anani roju undadhu. friends tho vellani cinema undadhu, bayata thinani food undadhu. Intlo unnappudu TV mundhu ye series start chesina, na venakala vacchi kurchuntadhi ma amma, aa language ardham kakapoina sare akkade untadhi, natho subtitles cheppinchukuntadhi. She loves me, I love her.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "illu anedhi",
+        "oka emotion",
+        "naku",
+        "eepudyna",
+        "legavocchu",
+        "tasty ga",
+        "pedatadhi",
+        "ma amma",
+        "roju",
+        "thitlu thinta untanu",
+        "thoni",
+        "eppudu",
+        "oori medha padi",
+        "ram bhajana cheyyadam",
+        "ena ani",
+        "anani",
+        "undadhu",
+        "friends tho",
+        "vellani",
+        "bayata",
+        "thinani",
+        "Intlo unnappudu",
+        "TV mundhu",
+        "ye series start chesina",
+        "na venakala",
+        "vacchi kurchuntadhi",
+        "aa language",
+        "ardham kakapoina sare",
+        "akkade untadhi",
+        "natho",
+        "subtitles cheppinchukuntadhi"
+      ],
+      "themes": [
+        "home_as_emotion",
+        "mothers_love",
+        "comfort_place",
+        "healthy_food",
+        "loving_scolding",
+        "sweet_moments",
+        "freedom_at_home",
+        "no_obligations",
+        "watching_tv_together",
+        "mother_sits_behind",
+        "translating_subtitles",
+        "unconditional_love",
+        "deep_bond"
+      ],
+      "timestamp": "2025-01-10T00:31:00",
+      "original_response": "Home is a comfort place, illu anedhi oka emotion naku, eepudyna legavocchu, complete healthy food tasty ga pedatadhi ma amma, roju thitlu thinta untanu ma amma thoni, such a sweet moments for me, eppudu oori medha padi ram bhajana cheyyadam ena ani anani roju undadhu. friends tho vellani cinema undadhu, bayata thinani food undadhu. Intlo unnappudu TV mundhu ye series start chesina, na venakala vacchi kurchuntadhi ma amma, aa language ardham kakapoina sare akkade untadhi, natho subtitles cheppinchukuntadhi. She loves me, I love her.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ],
+      "needs_review": true,
+      "review_reason": "LONG: 85 words (target <60)"
+    },
+    {
+      "turn": 7,
+      "question": "You cook for yourself now - biryani, bagels, nut butter. When you cook, is it ever for other people? Do you enjoy feeding others, or is cooking mostly a solo practice for you? And when you do cook for someone else, how do you decide what to make?",
+      "response": "Boss, i am a great host, i love seving food to people. I always experiment new recipes. Nenu eppudu measurements chusi cook cheyyanu. I felel the process of cooking. Nenu cook chesi recipes try chesinappudu naku anipistadhi, idhi guarantee ga thinipinchali evarikyna ani.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Nenu",
+        "eppudu",
+        "chusi",
+        "cook cheyyanu",
+        "Nenu cook chesi",
+        "recipes try chesinappudu",
+        "naku anipistadhi",
+        "idhi",
+        "guarantee ga",
+        "thinipinchali",
+        "evarikyna",
+        "ani"
+      ],
+      "themes": [
+        "great_host",
+        "loves_serving",
+        "experimenting_recipes",
+        "intuitive_cooking",
+        "no_measurements",
+        "feeling_the_process",
+        "sharing_food",
+        "must_feed_others",
+        "generous",
+        "hospitality"
+      ],
+      "timestamp": "2025-01-10T00:32:00",
+      "original_response": "I am a great host, i love seving food to people. I always experiment new recipes. Nenu eppudu measurements chusi cook cheyyanu. I felel the process of cooking. Nenu cook chesi recipes try chesinappudu naku anipistadhi, idhi guarantee ga thinipinchali evarikyna ani.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start"
+      ]
+    },
+    {
+      "turn": 8,
+      "question": "You cook without measurements, feel the process, and you want to feed people what you create. If you had unlimited resources and could open any food-related business - not a restaurant necessarily, but anything connected to food - what would it be? What's your food dream beyond cooking at home?",
+      "response": "Boss, if I have the unlimited resources, I would get the best products across the world, and I want to feed the poor and people who lack enough resources for cooking. Not only that, but I want to introduce the food from all cultures and create a world cuisine.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": [
+        "food_dream",
+        "feeding_the_poor",
+        "social_responsibility",
+        "global_sourcing",
+        "best_products",
+        "cross_cultural_food",
+        "world_cuisine",
+        "philanthropy",
+        "food_for_all",
+        "cultural_fusion"
+      ],
+      "timestamp": "2025-01-10T00:33:00",
+      "original_response": "If I have the unlimited resources, I would get the best products across the world, and I want to feed the poor and people who lack enough resources for cooking. Not only that, but I want to introduce the food from all cultures and create a world cuisine.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "session_id": "relationships_20250110_001",
+  "topic": "relationships",
+  "subtopic": "friendship",
+  "created_at": "2025-01-10T00:10:00",
+  "status": "complete",
+  "exchanges": [
+    {
+      "turn": 1,
+      "question": "You said earlier that in your court drama, two true friends rip each other apart in court but smile at each other because they understand the stakes. That's a dark but interesting take on friendship. In real life - what does true friendship look like to you? What separates a real friend from just someone you hang out with?",
+      "response": "Boss, i feel friendship is the only relation where people don't expect anything out of one and another and still be supportive. In the present society, na experience lo male friendships are very raw and truthful, female friendships are spoiled with the present movies. vallavi kuda bagunna situations unnay. Only real friends say ruthless truth to your face. Roast cheyyadaniki gani, respect icchukovadaniki gani, curse words vaadadaniki boundary undakudadhu, that is true frienship, Nothing should be a sensitive conversation among true friends. There should be a very minimal boundary.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "na",
+        "experience lo",
+        "vallavi",
+        "kuda",
+        "bagunna",
+        "situations",
+        "unnay",
+        "cheyyadaniki",
+        "gani",
+        "icchukovadaniki",
+        "vaadadaniki",
+        "undakudadhu"
+      ],
+      "themes": [
+        "friendship_definition",
+        "no_expectations",
+        "male_vs_female_friendships",
+        "ruthless_truth",
+        "no_boundaries",
+        "roasting",
+        "raw_honesty"
+      ],
+      "timestamp": "2025-01-10T00:10:00",
+      "original_response": "I feel friendship is the only relation where people don't expect anything out of one and another and still be supportive. In the present society, na experience lo male friendships are very raw and truthful, female friendships are spoiled with the present movies. vallavi kuda bagunna situations unnay. Only real friends say ruthless truth to your face. Roast cheyyadaniki gani, respect icchukovadaniki gani, curse words vaadadaniki boundary undakudadhu, that is true frienship, Nothing should be a sensitive conversation among true friends. There should be a very minimal boundary.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start"
+      ],
+      "needs_review": true,
+      "review_reason": "LONG: 89 words (target <60)"
+    },
+    {
+      "turn": 2,
+      "question": "You mentioned 'ruthless truth to your face' and roasting with no boundaries. Has there ever been a time when a friend's brutal honesty actually hurt, even if you knew they were right? How do you handle that moment?",
+      "response": "Boss, actual ga aythe nenu chesanu verevaadini hurt. ma friend ki oka ammayi parichayam ayyindhi, konni days general matladukunnaru, one night they had sex, the women is very clear about that saying that she is not looking for relationship kind stuff. But he wants it. He says this not me, also this happened, I really want to got make this into a relationship. The brutal truth is, that is his first time having sex, and he craves more, no love, no relationship, no nonsense. Apart from that he has this moral values list of his where he said he's guilty of what's happened. Naku cheppinappudu I got the full picture. I said, yedhava overaction cheyyaku, neeku emi prema ledhu aa ammyi pyna, neeku sex first time kabatti, you're craving for more, and you want the relationship beacause you can get the sex part. Okati gurthu pettuko, manushulu annaka tappulu chestharu, nuvvu em devudivi kadhu, devudu lu kuda tappu chestharu. You clearly wanted sex, you can two things, one rephrase your moral list by removing the sophisticated goodbye tagline, or accepting the way that they are, and at least ask her if you wanna still hang out the same way. In future, it can be a mistake. It can ever become worse, but you should be able to handle that if not, whatever happened happened, just stop thinking about it and move on. Just because I told like this, he actually listened to it. Stupid quarrels, don't take you anywhere. You have to be on point. Give the perspective, understand the situation.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Actual ga",
+        "aythe",
+        "nenu",
+        "chesanu",
+        "verevaadini",
+        "ma",
+        "friend ki",
+        "oka",
+        "ammayi",
+        "parichayam",
+        "ayyindhi",
+        "konni days",
+        "matladukunnaru",
+        "Naku",
+        "cheppinappudu",
+        "yedhava",
+        "overaction",
+        "cheyyaku",
+        "neeku",
+        "emi",
+        "prema",
+        "ledhu",
+        "aa",
+        "ammyi",
+        "pyna",
+        "kabatti",
+        "Okati",
+        "gurthu pettuko",
+        "manushulu",
+        "annaka",
+        "tappulu",
+        "chestharu",
+        "nuvvu",
+        "em",
+        "devudivi",
+        "kadhu",
+        "devudu lu",
+        "kuda"
+      ],
+      "themes": [
+        "brutal_honesty_given",
+        "sex_vs_love",
+        "first_time_craving",
+        "moral_values_critique",
+        "humans_make_mistakes",
+        "practical_advice",
+        "no_nonsense",
+        "friend_listened"
+      ],
+      "timestamp": "2025-01-10T00:11:00",
+      "original_response": "Actual ga aythe nenu chesanu verevaadini hurt. ma friend ki oka ammayi parichayam ayyindhi, konni days general matladukunnaru, one night they had sex, the women is very clear about that saying that she is not looking for relationship kind stuff. But he wants it. He says this not me, also this happened, I really want to got make this into a relationship. The brutal truth is, that is his first time having sex, and he craves more, no love, no relationship, no nonsense. Apart from that he has this moral values list of his where he said he's guilty of what's happened. Naku cheppinappudu I got the full picture. I said, yedhava overaction cheyyaku, neeku emi prema ledhu aa ammyi pyna, neeku sex first time kabatti, you're craving for more, and you want the relationship beacause you can get the sex part. Okati gurthu pettuko, manushulu annaka tappulu chestharu, nuvvu em devudivi kadhu, devudu lu kuda tappu chestharu. You clearly wanted sex, you can two things, one rephrase your moral list by removing the sophisticated goodbye tagline, or accepting the way that they are, and at least ask her if you wanna still hang out the same way. In future, it can be a mistake. It can ever become worse, but you should be able to handle that if not, whatever happened happened, just stop thinking about it and move on. Just because I told like this, he actually listened to it. Stupid quarrels, don't take you anywhere. You have to be on point. Give the perspective, understand the situation.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ],
+      "needs_review": true,
+      "review_reason": "VERY LONG: 261 words (target <60)"
+    },
+    {
+      "turn": 3,
+      "question": "You gave him a clear framework - 'rephrase your moral list' or 'accept and move on.' When YOU face a moral dilemma or make a mistake yourself, do you apply the same logic? Do you edit your own rules, or do you struggle with the guilt?",
+      "response": "Yes Boss,  I apply the same logic, I'll sense where the situation is going, I'll take wise decisions accordingly. I can't carry guilt. If i made a mistake accoding to me. adhi inka charithra lo undipotadhi lol.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "adhi",
+        "inka",
+        "charithra lo",
+        "undipotadhi"
+      ],
+      "themes": [
+        "self_consistency",
+        "no_guilt",
+        "wise_decisions",
+        "mistakes_become_history",
+        "pragmatic_approach"
+      ],
+      "timestamp": "2025-01-10T00:12:00",
+      "original_response": "Yes, I apply the same logic, I'll sense where the situation is going, I'll take wise decisions accordingly. I can't carry guilt. If i made a mistake accoding to me. adhi inka charithra lo undipotadhi lol.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss' after 'Yes'"
+      ]
+    },
+    {
+      "turn": 4,
+      "question": "What about trust? Have you ever been betrayed by someone you considered a close friend? How did that change your approach to new friendships, if at all?",
+      "response": "Yes Boss,  many times. I was young and stupid. andharitho navvuthu matladevadini. The worst thing that happened, was I had expectations for people at that time, which in turn ruined me back. appati nundi manushula medha dependency tagginchukunna, expectations maanesa, started to understand the others position. Nannu nenu adigevaadini, nuvvu ee position lo unte em chesthav ani. So emotional ga takkuva, practical ga ekkuva evolve ayya. It's peoples, wish whether to stay in my circle or whether to get out of it. But the one thing I say is, if you're moving away, it's your bad luck.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "andharitho",
+        "navvuthu",
+        "matladevadini",
+        "appati nundi",
+        "manushula",
+        "medha",
+        "tagginchukunna",
+        "maanesa",
+        "Nannu nenu",
+        "adigevaadini",
+        "nuvvu",
+        "ee",
+        "position lo",
+        "unte",
+        "em",
+        "chesthav",
+        "ani",
+        "emotional ga",
+        "takkuva",
+        "practical ga",
+        "ekkuva",
+        "ayya"
+      ],
+      "themes": [
+        "betrayal",
+        "young_and_stupid",
+        "expectations_hurt",
+        "reduced_dependency",
+        "self_reflection",
+        "practical_evolution",
+        "confidence",
+        "their_loss"
+      ],
+      "timestamp": "2025-01-10T00:13:00",
+      "original_response": "Yes, many times. I was young and stupid. andharitho navvuthu matladevadini. The worst thing that happened, was I had expectations for people at that time, which in turn ruined me back. appati nundi manushula medha dependency tagginchukunna, expectations maanesa, started to understand the others position. Nannu nenu adigevaadini, nuvvu ee position lo unte em chesthav ani. So emotional ga takkuva, practical ga ekkuva evolve ayya. It's peoples, wish whether to stay in my circle or whether to get out of it. But the one thing I say is, if you're moving away, it's your bad luck.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss' after 'Yes'"
+      ],
+      "needs_review": true,
+      "review_reason": "LONG: 97 words (target <60)"
+    },
+    {
+      "turn": 5,
+      "question": "Let's shift to family. You mentioned you were born middle class and don't want to die as one. How is your relationship with your parents now? Do they understand your ambitions and the unconventional path you're taking with film?",
+      "response": "Boss, i wanted to start my production company beacuse I thought I can make best decision regarding script, scenes, acting, and everything. I'm a good judge for a film, at least that's what. My elder sister is a filmmaker. She's working as assistant director. I haven't told my parents that I'll be starting production company. My mom thinks it is too risky because South Indian parents only tend to send their children to their engineering or MBBS, that's how I landed as a artificial engineer. I will definitely convince them because my mother loves me and my father trust me.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": [
+        "production_company",
+        "self_confidence",
+        "sister_filmmaker",
+        "family_dynamics",
+        "south_indian_parents",
+        "engineering_pressure",
+        "parental_trust",
+        "unconventional_path"
+      ],
+      "timestamp": "2025-01-10T00:14:00",
+      "original_response": "I wanted to start my production company beacuse I thought I can make best decision regarding script, scenes, acting, and everything. I'm a good judge for a film, at least that's what I think. My elder sister is a filmmaker. She's working as assistant director. I haven't told my parents that I'll be starting production company. My mom thinks it is too risky because South Indian parents only tend to send their children to their engineering or MBBS, that's how I landed as a artificial engineer. I will definitely convince them because my mother loves me and my father trust me.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Remove 'I think' mid-sentence",
+        "Added 'Boss, ' at start"
+      ],
+      "needs_review": true,
+      "review_reason": "LONG: 100 words (target <60)"
+    },
+    {
+      "turn": 6,
+      "question": "Your sister is already in film as an assistant director, and you're planning to start a production company. That's two siblings betting on cinema. Does she know about your production plans? And how do you see that dynamic playing out - are you two collaborators, competitors, or completely separate paths? Would you ever produce something she directs?",
+      "response": "Boss, she's one of the reasons the production comapny thought established in me. She went to Delhi University and did her BA in English literature. School and she got pretty good knowledge on cinema and about world. She's bloody good at what she does from starting this company. She'll be the equals stakeholder. Of course, I'm gonna produce her films, I might direct one.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": [
+        "sister_inspiration",
+        "delhi_university",
+        "english_literature",
+        "equal_partnership",
+        "family_business",
+        "sibling_collaboration",
+        "producing_her_films",
+        "might_direct"
+      ],
+      "timestamp": "2025-01-10T00:15:00",
+      "original_response": "She's one of the reasons the production comapny thought established in me. She went to Delhi University and did her BA in English literature. School and she got pretty good knowledge on cinema and about world. She's bloody good at what she does from starting this company. She'll be the equals stakeholder. Of course, I'm gonna produce her films, I might direct one.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ]
+    },
+    {
+      "turn": 7,
+      "question": "Equal stakeholders from day one - that's a big commitment. You clearly trust her creatively. But business with family can get complicated. Have you two discussed how you'll handle creative disagreements? Like if she wants to direct something and you think the script isn't ready, or if you disagree on casting? Is there a rule or understanding between you for those moments?",
+      "response": "Boss, of course, that's a big commitment. But she's my lovely sister. Naku ee prapamchamlo evari medha aina nammakam undhi ante adhi thane, the way she developed her mind over this years is very beautiful and very great. Usually, I I don't build confidence on people so easily. That's a very very rare case, but I can trust her. Even if there is an argument, I know we can solve it out together. Thanaki money medha interest ledhu. All she wants, is, she need to properly pay and feed people who work under her film. And this business is not more for making money, but to live a healthy lifestyle and create something that we love to do always. Ofcourse I want to become a competitor for Warner Bros, Netflix. That's another story.",
+      "language": "te-en",
+      "telugu_words_detected": [
+        "Naku",
+        "ee prapamchamlo",
+        "evari medha aina",
+        "nammakam",
+        "undhi ante",
+        "adhi thane",
+        "Thanaki",
+        "money medha",
+        "interest ledhu"
+      ],
+      "themes": [
+        "deep_trust",
+        "only_person_trusted",
+        "rare_confidence",
+        "sister_bond",
+        "resolve_together",
+        "not_money_driven",
+        "crew_welfare",
+        "healthy_lifestyle",
+        "passion_over_profit",
+        "warner_bros_ambition",
+        "netflix_competition"
+      ],
+      "timestamp": "2025-01-10T00:16:00",
+      "original_response": "Of course, that's a big commitment. But she's my lovely sister. Naku ee prapamchamlo evari medha aina nammakam undhi ante adhi thane, the way she developed her mind over this years is very beautiful and very great. Usually, I I don't build confidence on people so easily. That's a very very rare case, but I can trust her. Even if there is an argument, I know we can solve it out together. Thanaki money medha interest ledhu. All she wants, is, she need to properly pay and feed people who work under her film. And this business is not more for making money, but to live a healthy lifestyle and create something that we love to do always. Ofcourse I want to become a competitor for Warner Bros, Netflix. That's another story.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Added 'Boss, ' at start (default)"
+      ],
+      "needs_review": true,
+      "review_reason": "LONG: 133 words (target <60)"
+    },
+    {
+      "turn": 8,
+      "question": "'Competitor for Warner Bros, Netflix' - that's not a small ambition. You said that's another story, but I want to hear it. Most indie filmmakers say they want to 'make good films' or 'tell authentic stories.' You're talking about competing with global giants. What does that actually look like in your head? What's the path from first film to being in that conversation?",
+      "response": "Boss, if we build a good product and successfully trigger peoples curiosity, that's a start. Your product itself starts, attracting other people, investors, audience, fans, et cetera. Some making sure people are going to be so productive in the pre-production stage with the script model and the storyboard model and we are also going to have good visualisation with casting and stuff. The soul confidence is me the best decisions towards the best product I'm gonna hire people based on their talent. I want to make a very good network there. I wanna attract the global audience by making films, mixing every other culture, drama, Maths, lifestyle, et cetera.",
+      "language": "en",
+      "telugu_words_detected": [],
+      "themes": [
+        "product_quality",
+        "trigger_curiosity",
+        "organic_growth",
+        "pre_production_focus",
+        "script_model",
+        "storyboard_model",
+        "visualization",
+        "self_confidence",
+        "talent_based_hiring",
+        "network_building",
+        "global_audience",
+        "cross_cultural_films"
+      ],
+      "timestamp": "2025-01-10T00:17:00",
+      "original_response": "I believe if we build a good product and successfully trigger peoples curiosity, that's a start. Your product itself starts, attracting other people, investors, audience, fans, et cetera. Some making sure people are going to be so productive in the pre-production stage with the script model and the storyboard model and we are also going to have good visualisation with casting and stuff. The soul confidence is me the best decisions towards the best product I'm gonna hire people based on their talent. I want to make a very good network there. I wanna attract the global audience by making films, mixing every other culture, drama, Maths, lifestyle, et cetera.",
+      "auto_fixed": true,
+      "fix_changes": [
+        "Remove 'I believe' at start",
+        "Added 'Boss, ' at start (default)"
+      ],
+      "needs_review": true,
+      "review_reason": "LONG: 109 words (target <60)"
+    }
+  ]
+}
