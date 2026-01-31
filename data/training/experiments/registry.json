@@ -1,0 +1,36 @@
+{
+  "EXP-001": {
+    "id": "EXP-001",
+    "name": "Baseline LLaMA 3.1 8B",
+    "hypothesis": "Establish baseline metrics for untuned LLaMA 3.1 8B Instruct model. This gives us the 'zero point' to measure all improvements against.",
+    "created_at": "2026-01-31T01:11:00.835712",
+    "status": "completed",
+    "base_dataset": "",
+    "added_data": "",
+    "added_count": 0,
+    "epochs": 3,
+    "learning_rate": 0.0002,
+    "lora_r": 16,
+    "training_loss": 0.0,
+    "validation_loss": 0.0,
+    "metrics": {
+      "total_prompts": 30,
+      "passed": 27,
+      "failed": 3,
+      "identity_score": 0.8,
+      "brevity_score": 6.7,
+      "hedging_frequency": 0.0,
+      "flattery_frequency": 0.0,
+      "telugu_appropriate": 0.8333333333333334,
+      "boss_usage": 0.7666666666666667,
+      "domain_accuracy": 0.3333333333333333,
+      "overall_score": 0.864125
+    },
+    "decision": "",
+    "decision_reason": "",
+    "next_steps": "",
+    "model_path": "",
+    "eval_report": "data/training/experiments/EXP-001/eval_report.json",
+    "notes": []
+  }
+}
