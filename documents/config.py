@@ -218,6 +218,90 @@ class RetrievalConfig:
 
 
 @dataclass
+class ComprehensionConfig:
+    """Book comprehension configuration for the understanding layer"""
+
+    # Processing mode
+    thorough_mode: bool = True  # True = process all chapters, False = sample chunks
+    max_chunks_per_extraction: int = 20  # For sampling mode only
+
+    # Chapter-by-chapter settings (thorough mode)
+    process_by_chapter: bool = True
+    max_chunks_per_chapter: int = 30  # Chunks to include per chapter LLM call
+    parallel_chapters: int = 1  # Process N chapters in parallel (1 = sequential)
+
+    # Knowledge extraction targets
+    min_concepts_per_chapter: int = 3
+    min_principles_per_book: int = 10
+    min_techniques_per_book: int = 5
+    min_examples_per_book: int = 5
+
+    # Voice progress settings
+    voice_progress_enabled: bool = True
+    voice_progress_interval: str = "chapter"  # "chapter", "percentage", "step"
+    voice_announce_start: bool = True
+    voice_announce_complete: bool = True
+
+    # Cost management
+    max_llm_calls_per_book: int = 50  # Safety limit
+    estimated_cost_warning_threshold: float = 5.0  # Warn if > $5
+
+    # Quality
+    deduplication_enabled: bool = True
+    concept_similarity_threshold: float = 0.85  # For deduplication
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ComprehensionConfig":
+        return cls(
+            thorough_mode=data.get("thorough_mode", cls.thorough_mode),
+            max_chunks_per_extraction=data.get(
+                "max_chunks_per_extraction", cls.max_chunks_per_extraction
+            ),
+            process_by_chapter=data.get("process_by_chapter", cls.process_by_chapter),
+            max_chunks_per_chapter=data.get(
+                "max_chunks_per_chapter", cls.max_chunks_per_chapter
+            ),
+            parallel_chapters=data.get("parallel_chapters", cls.parallel_chapters),
+            min_concepts_per_chapter=data.get(
+                "min_concepts_per_chapter", cls.min_concepts_per_chapter
+            ),
+            min_principles_per_book=data.get(
+                "min_principles_per_book", cls.min_principles_per_book
+            ),
+            min_techniques_per_book=data.get(
+                "min_techniques_per_book", cls.min_techniques_per_book
+            ),
+            min_examples_per_book=data.get(
+                "min_examples_per_book", cls.min_examples_per_book
+            ),
+            voice_progress_enabled=data.get(
+                "voice_progress_enabled", cls.voice_progress_enabled
+            ),
+            voice_progress_interval=data.get(
+                "voice_progress_interval", cls.voice_progress_interval
+            ),
+            voice_announce_start=data.get(
+                "voice_announce_start", cls.voice_announce_start
+            ),
+            voice_announce_complete=data.get(
+                "voice_announce_complete", cls.voice_announce_complete
+            ),
+            max_llm_calls_per_book=data.get(
+                "max_llm_calls_per_book", cls.max_llm_calls_per_book
+            ),
+            estimated_cost_warning_threshold=data.get(
+                "estimated_cost_warning_threshold", cls.estimated_cost_warning_threshold
+            ),
+            deduplication_enabled=data.get(
+                "deduplication_enabled", cls.deduplication_enabled
+            ),
+            concept_similarity_threshold=data.get(
+                "concept_similarity_threshold", cls.concept_similarity_threshold
+            ),
+        )
+
+
+@dataclass
 class IntegrationConfig:
     """Memory/Knowledge Graph integration configuration"""
 
@@ -266,6 +350,7 @@ class DocumentConfig:
     storage: StorageConfig = field(default_factory=StorageConfig)
     retrieval: RetrievalConfig = field(default_factory=RetrievalConfig)
     integration: IntegrationConfig = field(default_factory=IntegrationConfig)
+    comprehension: ComprehensionConfig = field(default_factory=ComprehensionConfig)
 
     # Processing
     max_concurrent_pages: int = 4
@@ -299,6 +384,7 @@ class DocumentConfig:
             storage=StorageConfig.from_dict(data.get("storage", {})),
             retrieval=RetrievalConfig.from_dict(data.get("retrieval", {})),
             integration=IntegrationConfig.from_dict(data.get("integration", {})),
+            comprehension=ComprehensionConfig.from_dict(data.get("comprehension", {})),
             max_concurrent_pages=data.get("max_concurrent_pages", 4),
             batch_processing_enabled=data.get("batch_processing_enabled", True),
             progress_callback_interval=data.get("progress_callback_interval", 10),
@@ -339,6 +425,12 @@ class DocumentConfig:
             "integration": {
                 "store_in_ltm": self.integration.store_chunks_in_ltm,
                 "extract_triplets": self.integration.extract_triplets,
+            },
+            "comprehension": {
+                "thorough_mode": self.comprehension.thorough_mode,
+                "process_by_chapter": self.comprehension.process_by_chapter,
+                "voice_progress_enabled": self.comprehension.voice_progress_enabled,
+                "voice_progress_interval": self.comprehension.voice_progress_interval,
             },
         }
 

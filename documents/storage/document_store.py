@@ -745,6 +745,124 @@ class DocumentStore:
 
         return results
 
+    # ========== Vector Store Sync ==========
+
+    async def sync_embeddings_to_vector_store(
+        self,
+        vector_store: Any,
+        document_id: Optional[str] = None,
+        batch_size: int = 100,
+    ) -> int:
+        """
+        Sync chunk embeddings from SQLite to Qdrant.
+
+        Used for:
+        - Initial migration of existing embeddings to Qdrant
+        - Re-syncing after Qdrant restart
+        - Populating Qdrant after chunk ingestion
+
+        Args:
+            vector_store: A VectorStore instance (e.g. QdrantVectorStore)
+            document_id: Limit to specific document (None = all)
+            batch_size: Number of chunks per batch upsert
+
+        Returns:
+            Number of embeddings synced
+        """
+        from db.vector_store import COLLECTION_DOCUMENTS
+
+        # Ensure collection exists
+        await vector_store.ensure_collection(COLLECTION_DOCUMENTS)
+
+        # Get all chunks with embeddings
+        sql = "SELECT * FROM chunks WHERE embedding IS NOT NULL"
+        params: List[Any] = []
+        if document_id:
+            sql += " AND document_id = ?"
+            params.append(document_id)
+
+        with self._transaction() as cur:
+            cur.execute(sql, params)
+            rows = cur.fetchall()
+
+        if not rows:
+            return 0
+
+        # Batch upsert to Qdrant
+        total = 0
+        ids_batch: List[str] = []
+        vectors_batch: List[List[float]] = []
+        payloads_batch: List[Dict[str, Any]] = []
+
+        for row in rows:
+            embedding = pickle.loads(row["embedding"])
+            vector = (
+                embedding.tolist() if hasattr(embedding, "tolist") else list(embedding)
+            )
+
+            ids_batch.append(row["id"])
+            vectors_batch.append(vector)
+            payloads_batch.append(
+                {
+                    "document_id": row["document_id"],
+                    "chapter": row["chapter"] or "",
+                    "section": row["section"] or "",
+                    "page_range": row["page_range"] or "",
+                    "chunk_index": row["chunk_index"],
+                }
+            )
+
+            if len(ids_batch) >= batch_size:
+                count = await vector_store.upsert_batch(
+                    collection=COLLECTION_DOCUMENTS,
+                    ids=ids_batch,
+                    vectors=vectors_batch,
+                    payloads=payloads_batch,
+                )
+                total += count
+                ids_batch, vectors_batch, payloads_batch = [], [], []
+
+        # Final batch
+        if ids_batch:
+            count = await vector_store.upsert_batch(
+                collection=COLLECTION_DOCUMENTS,
+                ids=ids_batch,
+                vectors=vectors_batch,
+                payloads=payloads_batch,
+            )
+            total += count
+
+        LOGGER.info(
+            "Synced %d document embeddings to Qdrant%s",
+            total,
+            f" (doc={document_id})" if document_id else "",
+        )
+        return total
+
+    async def upsert_chunk_to_vector_store(
+        self,
+        vector_store: Any,
+        chunk: "Chunk",
+    ) -> None:
+        """Upsert a single chunk's embedding to Qdrant (called on ingest)"""
+        if not chunk.embedding:
+            return
+
+        from db.vector_store import COLLECTION_DOCUMENTS
+
+        await vector_store.upsert(
+            collection=COLLECTION_DOCUMENTS,
+            id=chunk.id,
+            vector=chunk.embedding,
+            payload={
+                "document_id": chunk.document_id,
+                "chapter": chunk.chapter or "",
+                "section": chunk.section or "",
+                "page_range": chunk.page_range or "",
+                "chunk_index": chunk.chunk_index,
+            },
+        )
+
     # ========== Statistics ==========
 
     def get_stats(self) -> Dict[str, Any]:

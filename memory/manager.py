@@ -35,21 +35,21 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from memory.config import MemorySystemConfig, get_memory_config
 from memory.layers.working import WorkingMemory, ConversationTurn, PrefetchedMemory
 from memory.layers.short_term import ShortTermMemory, STMEntry
 from memory.layers.long_term import LongTermMemory, LTMEntry, MemoryType
-from memory.layers.profile import ProfileStore, UserProfile
+from memory.layers.profile import ProfileStore
 from memory.layers.knowledge_graph import (
     KnowledgeGraph,
     NodeType,
     RelationType,
     TraversalResult,
 )
-from memory.telugu.processor import TeluguEnglishProcessor, calculate_telugu_density
-from memory.operations.triplet_extractor import TripletExtractor, ExtractionResult
+from memory.telugu.processor import TeluguEnglishProcessor
+from memory.operations.triplet_extractor import TripletExtractor
 
 LOGGER = logging.getLogger(__name__)
 

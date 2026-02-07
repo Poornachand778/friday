@@ -221,7 +221,8 @@ class LongTermMemory:
     """
     Long-term memory storage with vector search.
 
-    Uses SQLite with numpy for vector operations.
+    Uses Qdrant HNSW for fast vector search when available,
+    falls back to SQLite brute-force cosine similarity.
     Falls back to keyword search if embeddings unavailable.
 
     Usage:
@@ -247,9 +248,10 @@ class LongTermMemory:
         self._db_path = Path(self.config.sqlite_path)
         self._conn: Optional[sqlite3.Connection] = None
         self._embedder: Optional[EmbeddingModel] = None
+        self._vector_store = None  # Optional Qdrant backend
 
     async def initialize(self) -> None:
-        """Initialize database and embedding model"""
+        """Initialize database, embedding model, and optional Qdrant"""
         self._db_path.parent.mkdir(parents=True, exist_ok=True)
 
         self._conn = sqlite3.connect(str(self._db_path), check_same_thread=False)
@@ -262,6 +264,18 @@ class LongTermMemory:
 
         # Initialize embedding model
         self._embedder = EmbeddingModel(self.config.embedding_model)
+
+        # Try to connect to Qdrant
+        try:
+            from db.vector_store import get_vector_store
+
+            self._vector_store = await get_vector_store()
+            if self._vector_store:
+                LOGGER.info("LTM using Qdrant for vector search")
+            else:
+                LOGGER.info("LTM using SQLite vector search fallback")
+        except Exception as e:
+            LOGGER.debug("Could not initialize Qdrant for LTM: %s", e)
 
         LOGGER.info("LTM initialized: %s", self._db_path)
 
@@ -483,6 +497,26 @@ class LongTermMemory:
                 ),
             )
 
+        # Also upsert to Qdrant if available
+        if self._vector_store and entry.embedding:
+            try:
+                from db.vector_store import COLLECTION_MEMORIES
+
+                await self._vector_store.upsert(
+                    collection=COLLECTION_MEMORIES,
+                    id=entry.id,
+                    vector=entry.embedding,
+                    payload={
+                        "memory_type": entry.memory_type.value,
+                        "domain": entry.domain,
+                        "project": entry.project or "",
+                        "importance": entry.importance,
+                        "language": entry.language,
+                    },
+                )
+            except Exception as e:
+                LOGGER.warning("Failed to upsert LTM to Qdrant: %s", e)
+
         LOGGER.debug("Stored LTM: %s (%s)", entry.id[:8], memory_type.value)
         return entry
 
@@ -532,9 +566,10 @@ class LongTermMemory:
             updates["valid_until"] = updates["valid_until"].isoformat()
 
         # Re-generate embedding if content changed
+        new_embedding = None
         if "content" in updates and self._embedder and self._embedder.is_available:
-            embedding = self._embedder.encode(updates["content"])
-            updates["embedding"] = self._serialize_embedding(embedding)
+            new_embedding = self._embedder.encode(updates["content"])
+            updates["embedding"] = self._serialize_embedding(new_embedding)
 
         set_clause = ", ".join(f"{k} = ?" for k in updates.keys())
         values = list(updates.values()) + [memory_id]
@@ -544,16 +579,47 @@ class LongTermMemory:
                 f"UPDATE long_term_memories SET {set_clause} WHERE id = ?", values
             )
 
+        # Update Qdrant if embedding changed
+        if new_embedding and self._vector_store:
+            try:
+                from db.vector_store import COLLECTION_MEMORIES
+
+                entry = await self.get(memory_id)
+                if entry:
+                    await self._vector_store.upsert(
+                        collection=COLLECTION_MEMORIES,
+                        id=memory_id,
+                        vector=new_embedding,
+                        payload={
+                            "memory_type": entry.memory_type.value,
+                            "domain": entry.domain,
+                            "project": entry.project or "",
+                            "importance": entry.importance,
+                            "language": entry.language,
+                        },
+                    )
+            except Exception as e:
+                LOGGER.warning("Failed to update Qdrant embedding: %s", e)
+
         LOGGER.debug("Updated LTM: %s", memory_id[:8])
         return await self.get(memory_id)
 
     async def delete(self, memory_id: str) -> bool:
-        """Delete a memory"""
+        """Delete a memory from SQLite and Qdrant"""
         with self._transaction() as cur:
             cur.execute("DELETE FROM long_term_memories WHERE id = ?", (memory_id,))
             deleted = cur.rowcount > 0
 
         if deleted:
+            # Also remove from Qdrant
+            if self._vector_store:
+                try:
+                    from db.vector_store import COLLECTION_MEMORIES
+
+                    await self._vector_store.delete(COLLECTION_MEMORIES, memory_id)
+                except Exception as e:
+                    LOGGER.warning("Failed to delete from Qdrant: %s", e)
+
             LOGGER.debug("Deleted LTM: %s", memory_id[:8])
         return deleted
 
@@ -615,7 +681,73 @@ class LongTermMemory:
         project: Optional[str],
         min_importance: float,
     ) -> List[Tuple[LTMEntry, float]]:
-        """Vector similarity search using cosine similarity"""
+        """Vector similarity search (Qdrant HNSW first, SQLite fallback)"""
+
+        # Try Qdrant first
+        if self._vector_store:
+            try:
+                results = await self._qdrant_vector_search(
+                    query_embedding, top_k, memory_type, project, min_importance
+                )
+                if results:
+                    return results
+            except Exception as e:
+                LOGGER.warning("Qdrant LTM search failed, using SQLite: %s", e)
+
+        # SQLite brute-force fallback
+        return await self._sqlite_vector_search(
+            query_embedding, top_k, memory_type, project, min_importance
+        )
+
+    async def _qdrant_vector_search(
+        self,
+        query_embedding: List[float],
+        top_k: int,
+        memory_type: Optional[MemoryType],
+        project: Optional[str],
+        min_importance: float,
+    ) -> List[Tuple[LTMEntry, float]]:
+        """Vector search using Qdrant HNSW index"""
+        from db.vector_store import COLLECTION_MEMORIES
+
+        filters = {}
+        if memory_type:
+            filters["memory_type"] = memory_type.value
+        if project:
+            filters["project"] = project
+
+        qdrant_results = await self._vector_store.search(
+            collection=COLLECTION_MEMORIES,
+            query_vector=query_embedding,
+            top_k=top_k,
+            min_score=0.0,
+            filters=filters if filters else None,
+        )
+
+        # Convert Qdrant results to LTMEntry tuples
+        results: List[Tuple[LTMEntry, float]] = []
+        for r in qdrant_results:
+            entry = await self.get(r.id)
+            if entry:
+                # Apply importance filter (Qdrant doesn't do range filters easily)
+                if entry.importance >= min_importance:
+                    results.append((entry, r.score))
+
+        # Record access for retrieved memories
+        for entry, _ in results:
+            await self._record_access(entry.id)
+
+        return results
+
+    async def _sqlite_vector_search(
+        self,
+        query_embedding: List[float],
+        top_k: int,
+        memory_type: Optional[MemoryType],
+        project: Optional[str],
+        min_importance: float,
+    ) -> List[Tuple[LTMEntry, float]]:
+        """SQLite brute-force cosine similarity fallback"""
         query = "SELECT * FROM long_term_memories WHERE embedding IS NOT NULL"
         params: List[Any] = []
 
@@ -865,7 +997,17 @@ class LongTermMemory:
             )
             projects = cur.fetchone()[0]
 
-        return {
+        # Check Qdrant status
+        qdrant_count = None
+        if self._vector_store:
+            try:
+                from db.vector_store import COLLECTION_MEMORIES
+
+                qdrant_count = await self._vector_store.count(COLLECTION_MEMORIES)
+            except Exception:
+                pass
+
+        stats = {
             "total": total,
             "by_type": type_counts,
             "with_embeddings": with_embeddings,
@@ -876,7 +1018,84 @@ class LongTermMemory:
             "embedding_available": (
                 self._embedder.is_available if self._embedder else False
             ),
+            "vector_backend": "qdrant" if self._vector_store else "sqlite",
         }
+        if qdrant_count is not None:
+            stats["qdrant_vectors"] = qdrant_count
+        return stats
+
+    # =========================================================================
+    # Vector Store Sync
+    # =========================================================================
+
+    async def sync_to_vector_store(self, batch_size: int = 100) -> int:
+        """
+        Sync all LTM embeddings from SQLite to Qdrant.
+
+        Used for initial migration or re-sync after Qdrant restart.
+
+        Returns:
+            Number of embeddings synced
+        """
+        if not self._vector_store:
+            LOGGER.warning("No vector store available for sync")
+            return 0
+
+        from db.vector_store import COLLECTION_MEMORIES
+
+        await self._vector_store.ensure_collection(COLLECTION_MEMORIES)
+
+        with self._transaction() as cur:
+            cur.execute("SELECT * FROM long_term_memories WHERE embedding IS NOT NULL")
+            rows = cur.fetchall()
+
+        if not rows:
+            return 0
+
+        total = 0
+        ids_batch: list[str] = []
+        vectors_batch: list[list[float]] = []
+        payloads_batch: list[dict] = []
+
+        for row in rows:
+            embedding = self._deserialize_embedding(row["embedding"])
+            if embedding is None:
+                continue
+
+            ids_batch.append(row["id"])
+            vectors_batch.append(embedding)
+            payloads_batch.append(
+                {
+                    "memory_type": row["memory_type"],
+                    "domain": row["domain"],
+                    "project": row["project"] or "",
+                    "importance": row["importance"],
+                    "language": row["language"],
+                }
+            )
+
+            if len(ids_batch) >= batch_size:
+                count = await self._vector_store.upsert_batch(
+                    collection=COLLECTION_MEMORIES,
+                    ids=ids_batch,
+                    vectors=vectors_batch,
+                    payloads=payloads_batch,
+                )
+                total += count
+                ids_batch, vectors_batch, payloads_batch = [], [], []
+
+        # Final batch
+        if ids_batch:
+            count = await self._vector_store.upsert_batch(
+                collection=COLLECTION_MEMORIES,
+                ids=ids_batch,
+                vectors=vectors_batch,
+                payloads=payloads_batch,
+            )
+            total += count
+
+        LOGGER.info("Synced %d LTM embeddings to Qdrant", total)
+        return total
 
     # =========================================================================
     # Helper Methods

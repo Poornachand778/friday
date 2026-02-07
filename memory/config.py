@@ -30,13 +30,41 @@ class SensoryConfig:
 
 @dataclass
 class WorkingMemoryConfig:
-    """Working memory (active context) configuration"""
+    """Working memory (active context) configuration.
+
+    Context Window Management:
+        The working memory uses a sliding window with proactive compression
+        to prevent context overflow during 24/7 operation.
+
+        Capacity Zones:
+            - Normal (<70%): No compression needed
+            - Proactive (70-85%): Gentle summarization begins
+            - Aggressive (85-95%): Strong compression
+            - Emergency (>95%): Drop oldest content
+
+        Buffer Allocation:
+            - 20% for compressed history (summaries)
+            - 60% for recent verbatim turns
+            - 20% reserved for attention + LTM prefetch
+    """
 
     max_turns: int = 10
     max_tokens: int = 4000
     attention_decay_rate: float = 0.1
     prefetch_top_k: int = 5
     max_attention_items: int = 7  # Human working memory limit
+
+    # Context window capacity thresholds
+    proactive_threshold: float = 0.70  # Start proactive summarization
+    aggressive_threshold: float = 0.85  # Aggressive compression
+    emergency_threshold: float = 0.95  # Emergency pruning
+
+    # Minimum verbatim turns to keep (never compress these)
+    min_verbatim_turns: int = 3
+
+    # Context poisoning detection
+    repetition_threshold: int = 3  # Flag if same content appears N times
+    low_confidence_threshold: float = 0.5  # Quarantine below this
 
 
 @dataclass

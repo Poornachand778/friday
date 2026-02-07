@@ -164,8 +164,8 @@ class SemanticChunker:
                     )
                     chunk_index += 1
 
-                # Keep overlap for continuity
-                overlap_start = max(0, split_point - self.config.overlap_chars)
+                # Keep overlap for continuity, ensure forward progress
+                overlap_start = max(1, split_point - self.config.overlap_chars)
                 current_text = current_text[overlap_start:]
 
         # Flush remaining text
@@ -228,6 +228,9 @@ class SemanticChunker:
                 )
                 chunk_index += 1
 
+            # Advance position with overlap for continuity
+            if end >= len(full_text):
+                break  # Processed everything
             pos = end - self.config.overlap_chars
             if pos <= 0:
                 pos = end

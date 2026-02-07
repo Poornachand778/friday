@@ -10,13 +10,14 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import yaml
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG_PATH = REPO_ROOT / "config" / "orchestrator_config.yaml"
+DEFAULT_PROJECT_SLUG = os.environ.get("FRIDAY_DEFAULT_PROJECT", "aa-janta-naduma")
 
 
 @dataclass

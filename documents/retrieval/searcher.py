@@ -2,12 +2,13 @@
 Document Searcher
 
 Handles vector and hybrid search across document chunks.
+Supports Qdrant (HNSW) for fast vector search with SQLite fallback.
 """
 
 from __future__ import annotations
 
 import logging
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, TYPE_CHECKING
 
 from documents.config import RetrievalConfig, get_document_config
 from documents.models import (
@@ -19,6 +20,9 @@ from documents.models import (
 )
 from documents.storage.document_store import DocumentStore
 
+if TYPE_CHECKING:
+    from db.vector_store import VectorStore
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -27,9 +31,10 @@ class DocumentSearcher:
     Document search with vector similarity and hybrid search.
 
     Provides:
-    - Vector similarity search on chunk embeddings
+    - Qdrant HNSW vector search (when available)
+    - SQLite brute-force vector search (fallback)
     - FTS5 keyword search
-    - Hybrid search combining both
+    - Hybrid search combining vector + keyword via RRF
     - Result ranking and formatting
     """
 
@@ -37,13 +42,15 @@ class DocumentSearcher:
         self,
         store: DocumentStore,
         config: Optional[RetrievalConfig] = None,
+        vector_store: Optional["VectorStore"] = None,
     ):
         self.store = store
         self.config = config or get_document_config().retrieval
         self._embedding_model = None
+        self._vector_store = vector_store
 
     async def initialize(self) -> None:
-        """Initialize embedding model for query encoding"""
+        """Initialize embedding model and optional Qdrant connection"""
         try:
             from sentence_transformers import SentenceTransformer
 
@@ -55,6 +62,21 @@ class DocumentSearcher:
                 "sentence-transformers not installed. "
                 "Vector search will fall back to keyword search."
             )
+
+        # Try to connect to Qdrant if not already provided
+        if self._vector_store is None:
+            try:
+                from db.vector_store import get_vector_store
+
+                self._vector_store = await get_vector_store()
+                if self._vector_store:
+                    LOGGER.info("DocumentSearcher using Qdrant for vector search")
+                else:
+                    LOGGER.info(
+                        "Qdrant not available, using SQLite vector search fallback"
+                    )
+            except Exception as e:
+                LOGGER.debug("Could not initialize Qdrant: %s", e)
 
     async def search(
         self,
@@ -92,7 +114,7 @@ class DocumentSearcher:
         document_id: Optional[str] = None,
         top_k: int = 10,
     ) -> List[DocumentSearchResult]:
-        """Pure vector similarity search"""
+        """Pure vector similarity search (Qdrant first, SQLite fallback)"""
         if not self._embedding_model:
             LOGGER.warning("No embedding model, falling back to keyword search")
             return await self._keyword_search(query, document_id, top_k)
@@ -106,13 +128,52 @@ class DocumentSearcher:
             LOGGER.error("Failed to encode query: %s", e)
             return await self._keyword_search(query, document_id, top_k)
 
-        # Search
+        # Try Qdrant first
+        if self._vector_store:
+            try:
+                return await self._qdrant_vector_search(
+                    query_embedding, document_id, top_k
+                )
+            except Exception as e:
+                LOGGER.warning("Qdrant search failed, falling back to SQLite: %s", e)
+
+        # SQLite brute-force fallback
         results = self.store.vector_search(
             query_embedding=query_embedding,
             document_id=document_id,
             top_k=top_k,
             min_similarity=self.config.min_similarity,
         )
+
+        return self._format_results(results)
+
+    async def _qdrant_vector_search(
+        self,
+        query_embedding: List[float],
+        document_id: Optional[str] = None,
+        top_k: int = 10,
+    ) -> List[DocumentSearchResult]:
+        """Vector search using Qdrant HNSW index"""
+        from db.vector_store import COLLECTION_DOCUMENTS
+
+        filters = {}
+        if document_id:
+            filters["document_id"] = document_id
+
+        qdrant_results = await self._vector_store.search(
+            collection=COLLECTION_DOCUMENTS,
+            query_vector=query_embedding,
+            top_k=top_k,
+            min_score=self.config.min_similarity,
+            filters=filters if filters else None,
+        )
+
+        # Convert Qdrant results to (Chunk, score) tuples
+        results: List[Tuple[Chunk, float]] = []
+        for result in qdrant_results:
+            chunk = self.store.get_chunk(result.id)
+            if chunk:
+                results.append((chunk, result.score))
 
         return self._format_results(results)
 
@@ -147,19 +208,48 @@ class DocumentSearcher:
         # Get more results for merging
         fetch_k = top_k * 2
 
-        # Vector search
+        # Vector search (Qdrant first, SQLite fallback)
         vector_results: List[Tuple[Chunk, float]] = []
         if self._embedding_model:
             try:
                 query_embedding = self._embedding_model.encode(
                     query, normalize_embeddings=True
                 ).tolist()
-                vector_results = self.store.vector_search(
-                    query_embedding=query_embedding,
-                    document_id=document_id,
-                    top_k=fetch_k,
-                    min_similarity=0.0,  # Get more for fusion
-                )
+
+                # Try Qdrant HNSW search
+                if self._vector_store:
+                    try:
+                        from db.vector_store import COLLECTION_DOCUMENTS
+
+                        filters = {}
+                        if document_id:
+                            filters["document_id"] = document_id
+
+                        qdrant_results = await self._vector_store.search(
+                            collection=COLLECTION_DOCUMENTS,
+                            query_vector=query_embedding,
+                            top_k=fetch_k,
+                            min_score=0.0,  # Get more for fusion
+                            filters=filters if filters else None,
+                        )
+                        for r in qdrant_results:
+                            chunk = self.store.get_chunk(r.id)
+                            if chunk:
+                                vector_results.append((chunk, r.score))
+                    except Exception as e:
+                        LOGGER.warning(
+                            "Qdrant hybrid vector failed, using SQLite: %s", e
+                        )
+                        vector_results = []
+
+                # SQLite fallback if Qdrant didn't produce results
+                if not vector_results:
+                    vector_results = self.store.vector_search(
+                        query_embedding=query_embedding,
+                        document_id=document_id,
+                        top_k=fetch_k,
+                        min_similarity=0.0,
+                    )
             except Exception as e:
                 LOGGER.warning("Vector search failed: %s", e)
 

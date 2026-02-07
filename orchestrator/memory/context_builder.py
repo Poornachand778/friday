@@ -13,11 +13,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from orchestrator.inference.local_llm import ChatMessage
 from orchestrator.memory.conversation import ConversationMemory
 from orchestrator.context.contexts import Context, CONTEXTS, ContextType
+
+# Type alias: context builder accepts either memory implementation
+ConversationMemoryLike = Union[ConversationMemory, "WorkingMemoryAdapter"]
 
 LOGGER = logging.getLogger(__name__)
 
@@ -79,7 +82,7 @@ class ContextBuilder:
     def build(
         self,
         user_message: str,
-        conversation_memory: Optional[ConversationMemory] = None,
+        conversation_memory: Optional[ConversationMemoryLike] = None,
         context_type: ContextType = ContextType.GENERAL,
         include_ltm: bool = True,
         include_documents: bool = True,

@@ -13,6 +13,17 @@ from .screenplay_schema import (
     SceneRevision,
     ExportConfig,
 )
+from .vector_store import (
+    VectorStore,
+    VectorStoreConfig,
+    VectorSearchResult,
+    QdrantVectorStore,
+    get_vector_store,
+    reset_vector_store,
+    COLLECTION_DOCUMENTS,
+    COLLECTION_MEMORIES,
+    COLLECTION_SCENES,
+)
 
 __all__ = [
     "DatabaseSettings",
@@ -27,4 +38,14 @@ __all__ = [
     "SceneRelation",
     "SceneRevision",
     "ExportConfig",
+    # Vector store
+    "VectorStore",
+    "VectorStoreConfig",
+    "VectorSearchResult",
+    "QdrantVectorStore",
+    "get_vector_store",
+    "reset_vector_store",
+    "COLLECTION_DOCUMENTS",
+    "COLLECTION_MEMORIES",
+    "COLLECTION_SCENES",
 ]

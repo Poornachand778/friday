@@ -54,6 +54,10 @@ class TaskType(str, Enum):
     TECHNICAL = "technical"  # Code, debugging, analysis
     INFORMATION = "information"  # Factual questions
     MEMORY = "memory"  # Recall past conversations
+    DOCUMENT = "document"  # Document ingestion/search/retrieval
+    BOOK_STUDY = "book_study"  # Studying books for knowledge extraction
+    MENTORING = "mentoring"  # Applying book knowledge to creative work
+    KNOWLEDGE = "knowledge"  # Searching extracted knowledge
 
 
 @dataclass
@@ -94,10 +98,10 @@ class RouterDecision:
 ROUTER_SYSTEM_PROMPT = """You are a request router for Friday AI, an assistant for a Telugu screenwriter.
 
 Your job is to analyze the user's message and determine:
-1. Task type: conversation, scene_query, scene_management, email, creative, technical, information, memory
+1. Task type: conversation, scene_query, scene_management, email, creative, technical, information, memory, document, book_study, mentoring, knowledge
 2. Complexity: simple (direct answer), moderate (one tool), complex (multi-step)
 3. Context: writers_room (screenplay), kitchen (cooking), general (other)
-4. Required tools (if any): scene_search, scene_get, scene_update, scene_reorder, scene_link, send_email, send_screenplay
+4. Required tools (if any) from the list below
 
 Respond in JSON format only:
 {
@@ -112,17 +116,58 @@ Respond in JSON format only:
 }
 
 Available tools:
+
+Scene tools:
 - scene_search: Search scenes by content, character, or emotion
 - scene_get: Get specific scene by code or ID
 - scene_update: Modify scene status, text, or metadata
 - scene_reorder: Move scene to new position
 - scene_link: Create relationship between scenes
+
+Document tools:
+- document_ingest: Upload and process a PDF document
+- document_search: Search across ingested documents with citations
+- document_get_context: Get relevant document context for a query
+- document_get_chapter: Get full text of a specific chapter
+- document_list: List all ingested documents
+- document_get: Get specific document details
+- document_status: Check processing status of a document
+- document_delete: Delete a document and its chunks
+
+Book understanding tools:
+- book_study: Study an ingested book to extract concepts, principles, techniques
+- book_study_status: Check progress of a book study job
+- book_study_jobs: List all study jobs (active and completed)
+- book_list_studied: List all studied books
+
+Mentor tools (apply book knowledge to creative work):
+- mentor_load_books: Load studied books for a mentoring session
+- mentor_analyze: Analyze a scene using book knowledge
+- mentor_brainstorm: Brainstorm ideas using book principles
+- mentor_check_rules: Check scene against screenwriting rules
+- mentor_find_inspiration: Find relevant examples from studied books
+- mentor_ask: Ask what books say about a topic
+- mentor_compare: Compare what different books say about a topic
+
+Book detail tools:
+- book_get_understanding: Get full extracted knowledge from a studied book
+
+Knowledge tools:
+- knowledge_search: Search across all extracted book knowledge
+
+Communication tools:
 - send_email: Send email with content
 - send_screenplay: Email screenplay PDF
 
+Vision tools (placeholder - pending hardware):
+- camera_analyze: Analyze current camera feed
+- generate_image: Generate an image from a description
+
 Context clues:
-- Telugu/English film terms, scenes, dialogue → writers_room
+- Telugu/English film terms, scenes, dialogue, brainstorm → writers_room
 - Cooking, recipes, food → kitchen
+- Books, PDFs, documents, references, citations → writers_room or general
+- Mentor, analyze scene, what does McKee say → writers_room
 - General questions, casual chat → general"""
 
 
@@ -265,7 +310,10 @@ class GLMRouter:
     def _parse_response(self, data: Dict) -> RouterDecision:
         """Parse GLM response into RouterDecision"""
         try:
-            choice = data.get("choices", [{}])[0]
+            choices = data.get("choices", [])
+            if not choices:
+                return self._default_routing("", None)
+            choice = choices[0]
             content = choice.get("message", {}).get("content", "{}")
 
             # Parse JSON from response
@@ -320,44 +368,260 @@ class GLMRouter:
 
         # Detect tools needed
         tools = []
-        if any(kw in message_lower for kw in ["find", "search", "show me", "look for"]):
-            tools.append("scene_search")
+        task_type = TaskType.CONVERSATION
+
+        # --- Mentor / book knowledge tools ---
+        if any(
+            kw in message_lower
+            for kw in [
+                "mentor",
+                "analyze scene",
+                "analyze this",
+                "what does mckee",
+                "what does the book",
+                "according to",
+                "check rules",
+                "rule violation",
+                "brainstorm",
+                "inspiration",
+                "compare books",
+                "compare what",
+                "violat",
+            ]
+        ):
+            if "analyze" in message_lower:
+                tools.append("mentor_analyze")
+            elif "brainstorm" in message_lower:
+                tools.append("mentor_brainstorm")
+            elif "compare" in message_lower:
+                tools.append("mentor_compare")
+            elif "rule" in message_lower or "violat" in message_lower:
+                tools.append("mentor_check_rules")
+            elif "inspiration" in message_lower or "example" in message_lower:
+                tools.append("mentor_find_inspiration")
+            else:
+                tools.append("mentor_ask")
+            task_type = TaskType.MENTORING
+
+        # --- Book study tools ---
+        elif any(
+            kw in message_lower
+            for kw in [
+                "study book",
+                "study this",
+                "study the",
+                "book study",
+                "extract knowledge",
+            ]
+        ):
+            tools.append("book_study")
+            task_type = TaskType.BOOK_STUDY
+        elif any(
+            kw in message_lower
+            for kw in ["study status", "study progress", "how far", "still studying"]
+        ):
+            tools.append("book_study_status")
+            task_type = TaskType.BOOK_STUDY
+        elif any(
+            kw in message_lower
+            for kw in ["studied books", "list books", "which books", "books studied"]
+        ) or (
+            "books" in message_lower
+            and any(w in message_lower for w in ["studied", "list", "which", "have i"])
+        ):
+            tools.append("book_list_studied")
+            task_type = TaskType.BOOK_STUDY
+        elif any(
+            kw in message_lower
+            for kw in [
+                "what did we learn",
+                "show understanding",
+                "extracted from",
+                "book knowledge",
+            ]
+        ):
+            tools.append("book_get_understanding")
+            task_type = TaskType.BOOK_STUDY
+        elif any(
+            kw in message_lower
+            for kw in [
+                "study jobs",
+                "all jobs",
+                "job list",
+                "active jobs",
+                "running jobs",
+            ]
+        ) or (
+            "jobs" in message_lower
+            and any(
+                w in message_lower for w in ["study", "book", "list", "show", "all"]
+            )
+        ):
+            tools.append("book_study_jobs")
+            task_type = TaskType.BOOK_STUDY
+
+        # --- Document tools ---
+        elif (
+            "ingest" in message_lower
+            or "process pdf" in message_lower
+            or (
+                "upload" in message_lower
+                and any(w in message_lower for w in ["pdf", "document", "book"])
+            )
+        ):
+            tools.append("document_ingest")
+            task_type = TaskType.DOCUMENT
+        elif any(
+            kw in message_lower
+            for kw in ["document", "pdf", "book", "reference", "citation"]
+        ):
+            if any(kw in message_lower for kw in ["search", "find", "look"]):
+                tools.append("document_search")
+            elif any(
+                kw in message_lower
+                for kw in ["chapter", "read chapter", "get chapter", "show chapter"]
+            ):
+                tools.append("document_get_chapter")
+            elif any(
+                kw in message_lower for kw in ["status", "processing", "progress"]
+            ):
+                tools.append("document_status")
+            elif any(kw in message_lower for kw in ["delete", "remove", "discard"]):
+                tools.append("document_delete")
+            elif any(
+                kw in message_lower for kw in ["list", "show all", "all documents"]
+            ):
+                tools.append("document_list")
+            elif any(
+                kw in message_lower
+                for kw in ["details", "info about", "get document", "show document"]
+            ):
+                tools.append("document_get")
+            elif any(
+                kw in message_lower
+                for kw in ["context", "relevant context", "get context"]
+            ):
+                tools.append("document_get_context")
+            else:
+                tools.append("document_search")
+            task_type = TaskType.DOCUMENT
+
+        # --- Knowledge search ---
+        elif any(
+            kw in message_lower
+            for kw in [
+                "knowledge",
+                "concept",
+                "principle",
+                "technique",
+                "what did I learn",
+                "what do the books say",
+            ]
+        ):
+            tools.append("knowledge_search")
+            task_type = TaskType.KNOWLEDGE
+
+        # --- Scene tools ---
+        elif any(kw in message_lower for kw in ["find", "search", "look for"]):
+            if any(kw in message_lower for kw in ["scene", "script", "dialogue"]):
+                tools.append("scene_search")
+                task_type = TaskType.SCENE_QUERY
         if any(kw in message_lower for kw in ["scene", "get scene"]):
             if "update" in message_lower or "change" in message_lower:
                 tools.append("scene_update")
+                task_type = TaskType.SCENE_MANAGEMENT
             elif "move" in message_lower or "reorder" in message_lower:
                 tools.append("scene_reorder")
+                task_type = TaskType.SCENE_MANAGEMENT
             elif "link" in message_lower or "connect" in message_lower:
                 tools.append("scene_link")
+                task_type = TaskType.SCENE_MANAGEMENT
             elif not tools:
                 tools.append("scene_get")
+                task_type = TaskType.SCENE_QUERY
+
+        # --- Vision tools (placeholders) ---
+        if any(
+            kw in message_lower
+            for kw in ["camera", "analyze feed", "what's on camera", "check camera"]
+        ):
+            tools.append("camera_analyze")
+        elif any(
+            kw in message_lower
+            for kw in [
+                "generate image",
+                "generate a",
+                "draw",
+                "sketch",
+                "storyboard frame",
+                "concept art",
+                "visualize",
+            ]
+        ) and any(
+            kw in message_lower
+            for kw in [
+                "image",
+                "picture",
+                "art",
+                "frame",
+                "draw",
+                "sketch",
+                "visualize",
+            ]
+        ):
+            tools.append("generate_image")
+
+        # --- Mentor load books ---
+        if any(
+            kw in message_lower
+            for kw in [
+                "load book",
+                "load the book",
+                "prepare mentor",
+                "load for mentor",
+            ]
+        ):
+            if "mentor_analyze" not in tools and "mentor_brainstorm" not in tools:
+                tools.append("mentor_load_books")
+                task_type = TaskType.MENTORING
+
+        # --- Email tools ---
         if any(kw in message_lower for kw in ["email", "send", "mail"]):
-            tools.append("send_email")
+            if "screenplay" in message_lower or "script" in message_lower:
+                tools.append("send_screenplay")
+            else:
+                tools.append("send_email")
+            task_type = TaskType.EMAIL
 
         # Detect context
         context = current_context or "general"
         if any(
             kw in message_lower
-            for kw in ["scene", "script", "dialogue", "story", "film"]
+            for kw in [
+                "scene",
+                "script",
+                "dialogue",
+                "story",
+                "film",
+                "mentor",
+                "brainstorm",
+                "mckee",
+                "screenplay",
+            ]
         ):
             context = "writers_room"
         elif any(kw in message_lower for kw in ["cook", "recipe", "food", "kitchen"]):
             context = "kitchen"
+        elif any(kw in message_lower for kw in ["document", "pdf", "ingest", "upload"]):
+            context = "general"
 
-        # Detect task type
-        if tools:
-            if "scene" in " ".join(tools):
-                task_type = (
-                    TaskType.SCENE_QUERY
-                    if "search" in str(tools)
-                    else TaskType.SCENE_MANAGEMENT
-                )
-            elif "email" in str(tools):
-                task_type = TaskType.EMAIL
-            else:
-                task_type = TaskType.INFORMATION
-        else:
-            task_type = TaskType.CONVERSATION
+        # Fallback task type if no tools detected
+        if not tools and task_type == TaskType.CONVERSATION:
+            if any(
+                kw in message_lower
+                for kw in ["write", "draft", "dialogue", "story", "brainstorm"]
+            ):
+                task_type = TaskType.CREATIVE
 
         # Determine complexity
         complexity = TaskComplexity.SIMPLE

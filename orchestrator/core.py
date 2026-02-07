@@ -6,13 +6,20 @@ The central brain that coordinates all Friday AI components:
 - LLM inference (local or cloud)
 - Tool execution
 - Context management
-- Memory (STM + LTM)
+- Memory (WorkingMemory with capacity zones + poisoning detection)
 - Multi-room context switching
+
+Status:
+    DONE: Basic orchestrator structure
+    DONE: GLM-4 router integration
+    DONE: WorkingMemory integration (capacity zones, poisoning, attention)
+    DONE: MCP tool routing (scene_manager, documents, book/mentor)
+    TODO: Voice pipeline integration (Whisper STT → Friday → XTTS TTS)
+    TODO: Camera wake trigger support
 """
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import time
 import uuid
@@ -22,14 +29,16 @@ from typing import Any, AsyncIterator, Dict, List, Optional
 from orchestrator.config import OrchestratorConfig, get_config
 from orchestrator.context.contexts import ContextType, CONTEXTS
 from orchestrator.context.detector import ContextDetector
-from orchestrator.inference.local_llm import LLMClient, ChatMessage, ChatResponse
+from orchestrator.inference.local_llm import LLMClient, ChatResponse
 from orchestrator.inference.router import GLMRouter, RouterDecision
-from orchestrator.memory.conversation import ConversationMemory
+from orchestrator.memory.working_memory_adapter import WorkingMemoryAdapter
 from orchestrator.memory.context_builder import (
     ContextBuilder,
     get_default_system_prompt,
 )
 from orchestrator.tools.registry import ToolRegistry, get_tool_registry, ToolResult
+
+from memory.config import get_memory_config
 
 LOGGER = logging.getLogger(__name__)
 
@@ -80,8 +89,11 @@ class FridayOrchestrator:
         self._context_detector: Optional[ContextDetector] = None
         self._context_builder: Optional[ContextBuilder] = None
 
-        # Session state
-        self._sessions: Dict[str, ConversationMemory] = {}
+        # Memory system config
+        self._memory_config = get_memory_config()
+
+        # Session state (now using WorkingMemoryAdapter for advanced memory)
+        self._sessions: Dict[str, WorkingMemoryAdapter] = {}
         self._current_session_id: Optional[str] = None
         self._current_context: ContextType = ContextType.GENERAL
 
@@ -100,7 +112,7 @@ class FridayOrchestrator:
         return self._current_context
 
     @property
-    def current_session(self) -> Optional[ConversationMemory]:
+    def current_session(self) -> Optional[WorkingMemoryAdapter]:
         if self._current_session_id:
             return self._sessions.get(self._current_session_id)
         return None
@@ -155,19 +167,26 @@ class FridayOrchestrator:
         LOGGER.info("Friday Orchestrator shutdown complete")
 
     def _create_session(self, session_id: Optional[str] = None) -> str:
-        """Create a new conversation session"""
+        """Create a new conversation session with WorkingMemory."""
         session_id = session_id or str(uuid.uuid4())[:8]
 
-        memory = ConversationMemory(
-            max_turns=self.config.memory.max_history_turns,
-            max_tokens=getattr(self.config.memory, "max_context_tokens", 6000),
-        )
-        memory.session_id = session_id
+        # Use WorkingMemoryConfig from memory system, with orchestrator overrides
+        wm_config = self._memory_config.working
+        wm_config.max_turns = self.config.memory.max_history_turns
+        wm_config.max_tokens = getattr(self.config.memory, "max_context_tokens", 6000)
 
-        self._sessions[session_id] = memory
+        adapter = WorkingMemoryAdapter(config=wm_config)
+        adapter.session_id = session_id
+
+        self._sessions[session_id] = adapter
         self._current_session_id = session_id
 
-        LOGGER.info("Created session: %s", session_id)
+        LOGGER.info(
+            "Created session: %s (WorkingMemory: max_turns=%d, max_tokens=%d)",
+            session_id,
+            wm_config.max_turns,
+            wm_config.max_tokens,
+        )
         return session_id
 
     def switch_session(self, session_id: str) -> bool:
@@ -366,7 +385,7 @@ class FridayOrchestrator:
     async def _stream_response(
         self,
         built_context,
-        memory: ConversationMemory,
+        memory: WorkingMemoryAdapter,
         original_message: str,
         start_time: float,
     ) -> AsyncIterator[str]:
@@ -417,7 +436,7 @@ class FridayOrchestrator:
             for tc in current_response.tool_calls:
                 LOGGER.info("Executing tool: %s", tc.name)
 
-                result = self._tool_registry.execute(tc.name, tc.arguments)
+                result = await self._tool_registry.async_execute(tc.name, tc.arguments)
 
                 tool_call_dict = {
                     "id": tc.id,
@@ -464,23 +483,28 @@ class FridayOrchestrator:
         if not self._initialized:
             await self.initialize()
 
-        return self._tool_registry.execute(tool_name, arguments)
+        return await self._tool_registry.async_execute(tool_name, arguments)
 
     def get_session_info(self, session_id: Optional[str] = None) -> Dict[str, Any]:
-        """Get information about a session"""
+        """Get information about a session, including WorkingMemory health."""
         sid = session_id or self._current_session_id
         if not sid or sid not in self._sessions:
             return {"error": "Session not found"}
 
         memory = self._sessions[sid]
-        return {
+        info = {
             "session_id": sid,
             "turn_count": memory.turn_count,
             "active_turns": memory.active_turns,
             "current_context": memory.current_context,
             "started_at": memory.started_at,
             "total_tokens": memory.total_tokens,
+            # WorkingMemory-specific
+            "capacity_zone": memory.capacity_zone,
+            "capacity_percentage": f"{memory.capacity_percentage:.1%}",
+            "tokens_available": memory.tokens_available,
         }
+        return info
 
     def list_sessions(self) -> List[Dict[str, Any]]:
         """List all active sessions"""
@@ -535,6 +559,12 @@ class FridayOrchestrator:
             health["tools"] = len(self._tool_registry._tools)
         else:
             health["tools"] = 0
+
+        # Check working memory health
+        if self.current_session:
+            health["memory"] = self.current_session.get_health_status()
+        else:
+            health["memory"] = {"status": "no_active_session"}
 
         return health
 

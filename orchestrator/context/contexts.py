@@ -73,8 +73,26 @@ CONTEXTS = {
             # Document tools for reference
             "document_search",
             "document_get_context",
+            "document_get_chapter",
             "document_list",
             "document_get",
+            "document_status",
+            "document_delete",
+            "document_ingest",
+            # Book understanding & mentor tools
+            "book_study",
+            "book_study_status",
+            "book_study_jobs",
+            "book_list_studied",
+            "book_get_understanding",
+            "mentor_load_books",
+            "mentor_analyze",
+            "mentor_brainstorm",
+            "mentor_check_rules",
+            "mentor_find_inspiration",
+            "mentor_ask",
+            "mentor_compare",
+            "knowledge_search",
         ],
         lora_adapter="friday-script",
         external_apis=[],
@@ -111,12 +129,12 @@ CONTEXTS = {
             "Be precise with measurements and timing. Warn about food safety."
         ),
         available_tools=[
-            "recipe_search",
-            "timer_set",
-            "timer_check",
-            "ingredient_lookup",
             "camera_analyze",
-            "nutrition_info",
+            "send_email",
+            # Document tools for recipe references
+            "document_search",
+            "document_get_context",
+            "knowledge_search",
         ],
         lora_adapter=None,  # Use base model with tools
         external_apis=["vision"],  # Claude Vision for camera
@@ -151,10 +169,13 @@ CONTEXTS = {
         available_tools=[
             "scene_search",
             "scene_get",
-            "generate_storyboard",
             "generate_image",
-            "generate_video",
-            "shot_list",
+            "camera_analyze",
+            "send_email",
+            # Document tools for visual references
+            "document_search",
+            "document_get_context",
+            "knowledge_search",
         ],
         lora_adapter=None,  # Use base model with visual tools
         external_apis=["vision", "video_gen", "image_gen"],
@@ -186,14 +207,23 @@ CONTEXTS = {
             "mention that you can switch to that context for better tools."
         ),
         available_tools=[
-            "web_search",
-            "calculator",
             "send_email",
             # Document tools available everywhere
             "document_ingest",
             "document_search",
             "document_get_context",
+            "document_get_chapter",
             "document_list",
+            "document_get",
+            "document_status",
+            "document_delete",
+            # Book knowledge search
+            "knowledge_search",
+            "book_list_studied",
+            "book_study_jobs",
+            "book_get_understanding",
+            "mentor_ask",
+            "mentor_compare",
         ],
         lora_adapter=None,
         external_apis=[],

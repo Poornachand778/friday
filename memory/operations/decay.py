@@ -321,7 +321,7 @@ class DecayDaemon:
             # Store to LTM
             ltm_entry = await self._manager.store_fact(
                 content=entry.summary,
-                memory_type=MemoryType.CONVERSATION,
+                memory_type=MemoryType.FACT,  # Consolidated conversation → stored as fact
                 importance=entry.importance if hasattr(entry, "importance") else 0.7,
                 project=entry.project,
                 extract_triplets=True,  # Extract knowledge triplets
