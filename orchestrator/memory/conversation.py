@@ -204,19 +204,20 @@ class ConversationMemory:
             messages.append(ChatMessage(role="system", content=summary_msg))
             token_budget -= len(summary_msg) // 4
 
-        # Add recent turns (most recent first, then reverse)
-        recent_messages = []
+        # Collect turns that fit within token budget (most recent first)
+        selected_turns = []
         tokens_used = 0
 
         for turn in reversed(self._turns):
             turn_tokens = turn.token_estimate
             if tokens_used + turn_tokens > token_budget:
                 break
-            recent_messages.extend(turn.to_messages())
+            selected_turns.append(turn)
             tokens_used += turn_tokens
 
-        # Reverse to get chronological order
-        messages.extend(reversed(recent_messages))
+        # Add in chronological order (reverse selected turns, then expand messages)
+        for turn in reversed(selected_turns):
+            messages.extend(turn.to_messages())
 
         return messages
 

@@ -9,7 +9,6 @@ Uses the new structured screenplay schema with proper scene elements.
 from __future__ import annotations
 
 import os
-import json
 import logging
 from typing import List, Optional, Any, Dict
 

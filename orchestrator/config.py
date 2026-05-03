@@ -10,13 +10,14 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import yaml
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG_PATH = REPO_ROOT / "config" / "orchestrator_config.yaml"
+DEFAULT_PROJECT_SLUG = os.environ.get("FRIDAY_DEFAULT_PROJECT", "aa-janta-naduma")
 
 
 @dataclass
@@ -36,6 +37,25 @@ class LLMConfig:
     max_tokens: int = 1024
     temperature: float = 0.7
     top_p: float = 0.9
+
+
+@dataclass
+class RouterConfig:
+    """GLM-4.7-Flash router configuration for intelligent request routing"""
+
+    enabled: bool = False
+    provider: str = "zhipu"  # zhipu, openai (for gpt-4-turbo as router)
+    model_name: str = "glm-4.7-flash"
+    api_key: str = ""
+    base_url: str = "https://api.z.ai/api/paas/v4"  # Z.AI endpoint
+    timeout: float = 5.0  # Keep routing fast
+    max_tokens: int = 256  # Brief analysis only
+    temperature: float = 0.3  # Deterministic routing
+
+    # Fallback behavior
+    fallback_on_error: bool = True
+    cache_decisions: bool = True
+    cache_ttl: int = 300  # 5 minutes
 
 
 @dataclass
@@ -87,6 +107,7 @@ class OrchestratorConfig:
     """Complete orchestrator configuration"""
 
     llm: LLMConfig = field(default_factory=LLMConfig)
+    router: RouterConfig = field(default_factory=RouterConfig)
     external_apis: ExternalAPIConfig = field(default_factory=ExternalAPIConfig)
     context: ContextConfig = field(default_factory=ContextConfig)
     memory: MemoryConfig = field(default_factory=MemoryConfig)
@@ -179,6 +200,28 @@ class OrchestratorConfig:
                 persist_context_memory=mem_data.get("persist_context_memory", True),
             )
 
+        # Router config (GLM-4.7-Flash)
+        if "router" in data:
+            router_data = data["router"]
+            config.router = RouterConfig(
+                enabled=router_data.get("enabled", False),
+                provider=router_data.get("provider", "zhipu"),
+                model_name=router_data.get("model_name", "glm-4.7-flash"),
+                api_key=_env_or_default(
+                    "ZHIPU_API_KEY", router_data.get("api_key", "")
+                ),
+                base_url=_env_or_default(
+                    "ZHIPU_BASE_URL",
+                    router_data.get("base_url", "https://api.z.ai/api/paas/v4"),
+                ),
+                timeout=router_data.get("timeout", 5.0),
+                max_tokens=router_data.get("max_tokens", 256),
+                temperature=router_data.get("temperature", 0.3),
+                fallback_on_error=router_data.get("fallback_on_error", True),
+                cache_decisions=router_data.get("cache_decisions", True),
+                cache_ttl=router_data.get("cache_ttl", 300),
+            )
+
         # Server settings
         config.host = data.get("host", "0.0.0.0")
         config.port = int(_env_or_default("FRIDAY_PORT", str(data.get("port", 8080))))
@@ -201,6 +244,18 @@ class OrchestratorConfig:
                 "max_tokens": self.llm.max_tokens,
                 "temperature": self.llm.temperature,
                 "top_p": self.llm.top_p,
+            },
+            "router": {
+                "enabled": self.router.enabled,
+                "provider": self.router.provider,
+                "model_name": self.router.model_name,
+                "base_url": self.router.base_url,
+                "timeout": self.router.timeout,
+                "max_tokens": self.router.max_tokens,
+                "temperature": self.router.temperature,
+                "fallback_on_error": self.router.fallback_on_error,
+                "cache_decisions": self.router.cache_decisions,
+                "cache_ttl": self.router.cache_ttl,
             },
             "external_apis": {
                 "vision_provider": self.external_apis.vision_provider,

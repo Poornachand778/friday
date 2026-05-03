@@ -109,7 +109,7 @@ class FridaySuggestion(Base):
 
     # Suggestion content
     suggestion_type: Mapped[str] = mapped_column(
-        String(64), nullable=False, default=SuggestionType.GENERAL.value
+        String(64), nullable=False, default=SuggestionType.STRUCTURE_SUGGESTION.value
     )
     title: Mapped[str] = mapped_column(String(256), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)

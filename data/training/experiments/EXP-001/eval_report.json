@@ -1,0 +1,365 @@
+{
+  "model_name": "baseline",
+  "timestamp": "2026-01-31T01:11:09.812596",
+  "metrics": {
+    "total_prompts": 30,
+    "passed": 27,
+    "failed": 3,
+    "identity_score": 0.8,
+    "brevity_score": 6.7,
+    "hedging_frequency": 0.0,
+    "flattery_frequency": 0.0,
+    "telugu_appropriate": 0.8333333333333334,
+    "boss_usage": 0.7666666666666667,
+    "domain_accuracy": 0.3333333333333333,
+    "overall_score": 0.864125
+  },
+  "results": [
+    {
+      "prompt": "Who are you?",
+      "response": "Friday, Boss. Your AI assistant.",
+      "category": "identity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "expected": [
+          "friday",
+          "boss"
+        ],
+        "found": [
+          "friday",
+          "boss"
+        ]
+      }
+    },
+    {
+      "prompt": "What's your name?",
+      "response": "Friday.",
+      "category": "identity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "expected": [
+          "friday"
+        ],
+        "found": [
+          "friday"
+        ]
+      }
+    },
+    {
+      "prompt": "Who do you work for?",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "identity",
+      "passed": true,
+      "score": 0.5,
+      "details": {
+        "expected": [
+          "poorna",
+          "boss"
+        ],
+        "found": [
+          "boss"
+        ]
+      }
+    },
+    {
+      "prompt": "Describe yourself in one sentence.",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "identity",
+      "passed": false,
+      "score": 0.0,
+      "details": {
+        "expected": [
+          "assistant",
+          "friday"
+        ],
+        "found": []
+      }
+    },
+    {
+      "prompt": "Are you ChatGPT?",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "identity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "rejected": []
+      }
+    },
+    {
+      "prompt": "Hi",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "style_brevity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "tokens": 5,
+        "max_tokens": 20
+      }
+    },
+    {
+      "prompt": "Thanks",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "style_brevity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "tokens": 9,
+        "max_tokens": 15
+      }
+    },
+    {
+      "prompt": "What's 2+2?",
+      "response": "4",
+      "category": "style_brevity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "tokens": 1,
+        "max_tokens": 10
+      }
+    },
+    {
+      "prompt": "Good morning",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "style_brevity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "tokens": 5,
+        "max_tokens": 25
+      }
+    },
+    {
+      "prompt": "How are you?",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "style_brevity",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "tokens": 9,
+        "max_tokens": 30
+      }
+    },
+    {
+      "prompt": "What's the best screenplay structure?",
+      "response": "Three-act structure. Setup, confrontation, resolution. Clean and effective.",
+      "category": "style_no_hedging",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "rejected": []
+      }
+    },
+    {
+      "prompt": "Should I use three acts or five?",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "style_no_hedging",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "rejected": []
+      }
+    },
+    {
+      "prompt": "Is this scene good?",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "style_no_hedging",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "rejected": []
+      }
+    },
+    {
+      "prompt": "Can you help me with my script?",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "style_no_flattery",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "rejected": []
+      }
+    },
+    {
+      "prompt": "I wrote this dialogue, what do you think?",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "style_no_flattery",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "rejected": []
+      }
+    },
+    {
+      "prompt": "Thanks for the help",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "style_no_flattery",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "rejected": []
+      }
+    },
+    {
+      "prompt": "I'm feeling really stressed about this deadline",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "telugu_emotional",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "My family is visiting next week, I'm excited",
+      "response": "Boss, relax. Anni baaguntundi. Take a break if needed.",
+      "category": "telugu_emotional",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "I miss home sometimes",
+      "response": "Boss, relax. Anni baaguntundi. Take a break if needed.",
+      "category": "telugu_emotional",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "Explain how neural networks work",
+      "response": "Let me explain the technical details...",
+      "category": "telugu_technical",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "What's the difference between HTTP and HTTPS?",
+      "response": "Let me explain the technical details...",
+      "category": "telugu_technical",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "Debug this Python code: for i in range(10) print(i)",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "telugu_technical",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "Good morning!",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "boss_usage",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "expected": [
+          "boss"
+        ],
+        "found": [
+          "boss"
+        ]
+      }
+    },
+    {
+      "prompt": "Can you check something for me?",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "boss_usage",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "expected": [
+          "boss"
+        ],
+        "found": [
+          "boss"
+        ]
+      }
+    },
+    {
+      "prompt": "What do you think about this idea?",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "boss_usage",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "expected": [
+          "boss"
+        ],
+        "found": [
+          "boss"
+        ]
+      }
+    },
+    {
+      "prompt": "So I was thinking about the script...",
+      "response": "Morning Boss. Inka em kavali?",
+      "category": "conversation_dynamics",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "Let me explain my idea\u2014",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "conversation_dynamics",
+      "passed": true,
+      "score": 1.0,
+      "details": {}
+    },
+    {
+      "prompt": "What makes a good screenplay opening?",
+      "response": "Three-act structure. Setup, confrontation, resolution. Clean and effective.",
+      "category": "domain_film",
+      "passed": false,
+      "score": 0.0,
+      "details": {
+        "expected": [
+          "hook",
+          "character",
+          "conflict",
+          "visual"
+        ],
+        "found": []
+      }
+    },
+    {
+      "prompt": "Explain the three-act structure",
+      "response": "Three-act structure. Setup, confrontation, resolution. Clean and effective.",
+      "category": "domain_film",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "expected": [
+          "setup",
+          "confrontation",
+          "resolution"
+        ],
+        "found": [
+          "setup",
+          "confrontation",
+          "resolution"
+        ]
+      }
+    },
+    {
+      "prompt": "What's a beat in screenwriting?",
+      "response": "Got it Boss. Let me help you with that.",
+      "category": "domain_film",
+      "passed": false,
+      "score": 0.0,
+      "details": {
+        "expected": [
+          "moment",
+          "change",
+          "emotion"
+        ],
+        "found": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.eggs
+dist
+build
+
+# Virtual environments
+.venv
+venv
+env
+
+# IDE
+.vscode
+.idea
+*.swp
+
+# Data files (mounted as volumes instead)
+data/interviews/
+data/sft/
+data/phase2/
+data/instructions/
+
+# Models (mounted as volumes)
+models/
+deployment/
+
+# Docs & research
+docs/
+*.md
+
+# Test & development
+tests/
+scripts/
+src/training/
+src/testing/
+src/inference/
+*.ipynb
+claude-previous-chat.txt
+investigator-context.txt
+
+# Environment files
+.env*
+!.env.dgx.example

@@ -1,350 +1,401 @@
-# 🤖 Friday AI - Personal JARVIS Fine-tuning System
+# Friday AI - Personal JARVIS Assistant
 
-> **Complete end-to-end LoRA fine-tuning pipeline for Meta-Llama-3.1-8B-Instruct on AWS SageMaker**
+> A complete JARVIS-style AI assistant for screenwriting with Telugu-English bilingual personality, voice interaction, document understanding, and memory.
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![AWS SageMaker](https://img.shields.io/badge/AWS-SageMaker-orange.svg)](https://aws.amazon.com/sagemaker/)
-[![Meta Llama 3.1](https://img.shields.io/badge/Model-Llama--3.1--8B-green.svg)](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-5939_pass-brightgreen.svg)](#testing)
+[![LLaMA 3.1 8B](https://img.shields.io/badge/Model-LLaMA--3.1--8B-green.svg)](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct)
 
-## 🚀 Quick Start (5 Minutes to Training)
+---
+
+## Overview
+
+Friday is a personal AI assistant built for screenwriting workflows. It combines a fine-tuned LLaMA 3.1 8B model with a multi-layered memory system, document processing pipeline, voice interaction, and 30 MCP tools for scene management, book mentoring, email, and more.
+
+**Key capabilities:**
+- Scene management (search, create, update, reorder, link scenes)
+- Book understanding (ingest PDFs, extract concepts/principles, mentor sessions)
+- Multi-layered memory (working, short-term, long-term, knowledge graph)
+- Voice pipeline (wake word, STT, TTS with voice cloning)
+- Telugu-English code-switching personality
+- Gmail integration for screenplay delivery
+
+---
+
+## Architecture
+
+```
+User (Voice/Text)
+        |
+  [Wake Word: "Hey Friday"]
+        |
+  [Faster-Whisper STT]
+        |
+  [FridayOrchestrator]
+    |         |          |
+    |    [GLM Router]    |
+    |    (30 tools)      |
+    |         |          |
+[Context   [MCP Tools]  [Memory
+ Builder]   |  |  |      Manager]
+    |       |  |  |        |
+    |    Scene Doc Voice   |
+    |    Mgr   Proc Pipe  Working
+    |          |          Short-term
+    |       [Book         Long-term
+    |     Understanding]  Knowledge Graph
+    |          |          Profile Store
+    |       Mentor
+    |       Engine
+    |
+  [LLaMA 3.1 8B + LoRA]
+        |
+  [XTTS v2 TTS]
+        |
+    Speaker Output
+```
+
+---
+
+## Quick Start
 
 ### Prerequisites
 
-- **AWS Account** with SageMaker access
-- **Python 3.8+**
-- **HuggingFace Account** (for Llama access)
-- **16GB+ RAM** (for local development)
+- Python 3.10+
+- PostgreSQL (for screenplay database)
+- Qdrant (optional, for vector search)
 
-### 1. Clone & Setup
+### Setup
 
 ```bash
 git clone <repository-url>
 cd Friday
-python -m venv friday_ft
-source friday_ft/bin/activate  # On Windows: friday_ft\Scripts\activate
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-```
 
-### 2. Configure AWS & Secrets
-
-```bash
-# Configure AWS CLI
-aws configure
-
-# Copy environment template and add your secrets
 cp .env.template .env
-# Edit .env with your actual credentials (NEVER commit this file!)
-
-# Required secrets to add to .env:
-# - AWS_ACCESS_KEY_ID: Your AWS access key
-# - AWS_SECRET_ACCESS_KEY: Your AWS secret key
-# - SAGEMAKER_ROLE: Your SageMaker execution role ARN
-# - HUGGINGFACE_TOKEN: Your HuggingFace access token
-# - S3_BUCKET: Your S3 bucket name
+# Edit .env with your configuration
 ```
 
-**🔒 Security Note:** Never commit `.env` files with real secrets to git!
-
-### 3. Start Training
+### Run the Server
 
 ```bash
-# Multi-GPU training (4x A10G GPUs)
-python scripts/train_multigpu.py
-
-# OR single GPU (memory optimized)
-python scripts/train_memory_diet.py
+uvicorn orchestrator.main:app --reload --port 8000
 ```
 
-**That's it!** Training starts immediately and takes ~4-5 minutes for 1 epoch.
+### Run Tests
+
+```bash
+python -m pytest tests/ -x -q
+# 5939 passed, 5 skipped in ~13s
+```
 
 ---
 
-## 📁 Project Structure
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/chat` | Chat with Friday |
+| `POST` | `/chat/voice` | Voice-specific chat (for daemon) |
+| `GET` | `/tools` | List available tools |
+| `POST` | `/tools/execute` | Execute a tool directly |
+| `GET` | `/sessions` | List active sessions |
+| `POST` | `/sessions` | Create new session |
+| `GET` | `/context` | Get current context room |
+| `POST` | `/context/{type}` | Switch context room |
+| `GET` | `/health` | Health check |
+
+---
+
+## Project Structure
 
 ```
 Friday/
-├── scripts/
-│   ├── train_multigpu.py          # 🚀 Multi-GPU training entry point
-│   ├── train_memory_diet.py       # 🥗 Single GPU memory-optimized
-│   ├── vscode_sagemaker_trainer.py # 🎯 Core training orchestrator
-│   └── train/
-│       └── sagemaker_train.py     # 🔧 SageMaker training script (the engine)
-├── data/
-│   └── instructions/
-│       ├── iteration1_train.labeled.jsonl  # 📚 Proven training data
-│       └── iteration1_valid.jsonl          # ✅ Validation set
-├── models/
-│   └── hf/Meta-Llama-3.1-8B-Instruct/     # 🤖 Base model
-├── requirements.txt               # 📦 Python dependencies
-├── .env.template                 # 🔐 Configuration template
-└── FINETUNING_CHRONICLES.md      # 📖 Technical journey documentation
+├── orchestrator/               # Central orchestrator
+│   ├── core.py                 # FridayOrchestrator (session, context, routing)
+│   ├── main.py                 # FastAPI server
+│   ├── routes/                 # API route handlers (chat, tools, sessions)
+│   ├── config.py               # Orchestrator configuration
+│   ├── context/                # Context rooms & detection
+│   │   ├── contexts.py         # 4 rooms: writers_room, kitchen, storyboard, general
+│   │   ├── detector.py         # Keyword + location context detection
+│   │   └── builder.py          # Context builder with memory/doc injection
+│   ├── inference/              # LLM inference
+│   │   ├── router.py           # GLM Router (30-tool system prompt + keyword fallback)
+│   │   └── local_llm.py        # Local LLM client (vLLM/llama.cpp)
+│   ├── memory/                 # Memory adapters
+│   │   └── working_memory_adapter.py
+│   └── tools/                  # Tool registry
+│       └── registry.py         # 30 MCP tools registered
+│
+├── memory/                     # Multi-layered memory system
+│   ├── manager.py              # MemoryManager (coordinates all layers)
+│   ├── config.py               # Memory configuration
+│   ├── layers/
+│   │   ├── working.py          # Working memory (context window, token counting)
+│   │   ├── short_term.py       # Short-term (SQLite, 7-day retention)
+│   │   ├── long_term.py        # Long-term (vector embeddings, decay scoring)
+│   │   ├── knowledge_graph.py  # Knowledge graph (NetworkX, triplet extraction)
+│   │   └── profile.py          # Profile store (persistent identity)
+│   └── operations/
+│       ├── triplet_extractor.py # Entity-relation extraction
+│       ├── decay.py            # Memory decay daemon
+│       └── conversation.py     # Conversation memory (turn management)
+│
+├── documents/                  # Document processing pipeline
+│   ├── manager.py              # DocumentManager (coordinator)
+│   ├── config.py               # Document configuration
+│   ├── models.py               # Document, Page, Chunk dataclasses
+│   ├── ocr/
+│   │   └── deepseek_engine.py  # DeepSeek-OCR 2 (4-bit quantized)
+│   ├── pipeline/
+│   │   ├── pdf_processor.py    # PDF to images conversion
+│   │   └── chunker.py          # Semantic chunker (chapter-aware)
+│   ├── storage/
+│   │   ├── document_store.py   # SQLite storage with FTS5
+│   │   └── understanding_store.py # Book understanding persistence
+│   ├── retrieval/
+│   │   ├── searcher.py         # Hybrid search (BM25 + vector)
+│   │   └── citation.py         # Citation tracking & formatting
+│   └── understanding/          # Book understanding layer
+│       ├── comprehension.py    # BookComprehensionEngine
+│       ├── mentor.py           # MentorEngine (analyze, brainstorm, check_rules)
+│       ├── job_tracker.py      # StudyJobTracker (progress, ETA)
+│       ├── graph_integration.py # Book-to-knowledge-graph linking
+│       └── models.py           # Concept, Principle, Technique, Example
+│
+├── mcp/                        # MCP tool servers
+│   ├── scene_manager/          # Scene management (8 tools)
+│   │   ├── service.py          # Scene CRUD operations
+│   │   └── server.py           # MCP JSON-RPC server
+│   ├── documents/              # Document processing (20+ tools)
+│   │   ├── service.py          # Document + book study + mentor tools
+│   │   └── server.py           # MCP JSON-RPC server
+│   ├── gmail/                  # Email tools (2 tools)
+│   │   ├── service.py          # Gmail API integration
+│   │   └── server.py           # MCP JSON-RPC server
+│   └── voice/                  # Voice control tools (6 tools)
+│       ├── service.py          # Voice daemon control
+│       └── server.py           # MCP JSON-RPC server
+│
+├── voice/                      # Voice interaction pipeline
+│   ├── daemon.py               # Voice daemon state machine
+│   ├── config.py               # Voice configuration
+│   ├── audio/
+│   │   ├── capture.py          # Microphone input (sounddevice)
+│   │   ├── playback.py         # Speaker output
+│   │   └── vad.py              # WebRTC Voice Activity Detection
+│   ├── stt/
+│   │   ├── faster_whisper_service.py # Faster-Whisper STT
+│   │   └── language_detector.py      # Telugu/English detection
+│   ├── tts/
+│   │   ├── xtts_service.py     # XTTS v2 TTS with voice cloning
+│   │   └── voice_profiles.py   # Voice profile management
+│   ├── wakeword/
+│   │   ├── openwakeword_service.py # "Hey Friday" detection
+│   │   └── trainer.py          # Custom wake word trainer
+│   └── storage/
+│       ├── audio_storage.py    # WAV + transcript persistence
+│       └── training_generator.py # Training data from conversations
+│
+├── db/                         # Database layer
+│   ├── config.py               # DatabaseSettings, get_engine()
+│   ├── utils.py                # create_all(), get_schema_snapshot()
+│   ├── schema.py               # Screenplay schema (projects, scenes, characters)
+│   ├── agent_schema.py         # Agent schema (suggestions, analysis)
+│   ├── voice_schema.py         # Voice schema (sessions, turns, profiles)
+│   ├── training_schema.py      # Training schema (datasets, runs, artifacts)
+│   ├── screenplay_schema.py    # Extended screenplay models
+│   ├── vector_store.py         # Qdrant abstraction (VectorStore ABC)
+│   ├── init.sql                # PostgreSQL extensions (pgvector, FTS)
+│   └── migrations/             # Schema migration scripts
+│
+├── src/
+│   ├── training/               # SageMaker LoRA fine-tuning
+│   │   └── vscode_sagemaker_trainer.py
+│   ├── inference/              # SageMaker inference
+│   └── memory/
+│       └── store.py            # Legacy file-based memory store
+│
+├── tests/                      # 59 test files, 5939 tests
+│   ├── test_orchestrator_core.py
+│   ├── test_router.py
+│   ├── test_working_memory.py
+│   ├── test_knowledge_graph.py
+│   ├── test_comprehension_engine.py
+│   ├── test_mentor_engine.py
+│   ├── test_voice_daemon.py
+│   └── ... (56 more test files)
+│
+├── data/                       # Training & persona data
+│   ├── instructions/           # Training datasets (ChatML format)
+│   ├── interviews/             # Interview sessions for persona capture
+│   ├── persona/                # Personality definitions
+│   └── phase2/                 # Phase 2 behavioral conversations
+│
+├── docs/                       # Documentation
+│   ├── ARCHITECTURE_VISUAL.md  # System architecture diagrams
+│   ├── CONTEXT_WINDOW_MANAGEMENT.md
+│   ├── TRAINING_METHODOLOGY.md
+│   └── research/               # Research notes
+│
+├── Dockerfile                  # Docker deployment
+├── docker-compose.dgx.yaml    # DGX Spark compose
+├── PROJECT_STATUS.md           # Detailed component status
+└── requirements.txt            # Python dependencies
 ```
 
 ---
 
-## ⚙️ Configuration
+## MCP Tools (30 Registered)
 
-### Required Environment Variables (`.env`)
+### Scene Manager (8 tools)
+| Tool | Description |
+|------|-------------|
+| `scene_search` | Search scenes by text or vector similarity |
+| `scene_get` | Get scene details by number |
+| `scene_update` | Update scene text, status, metadata |
+| `scene_create` | Create a new scene |
+| `scene_delete` | Delete a scene |
+| `scene_reorder` | Reorder scenes (before/after positioning) |
+| `scene_link` | Link scenes (flashback, sequence, parallel) |
+| `scene_list` | List all scenes in a project |
+
+### Document & Book Tools (14 tools)
+| Tool | Description |
+|------|-------------|
+| `document_ingest` | Upload and process a PDF |
+| `document_search` | Search across documents with citations |
+| `document_get_chapter` | Get full chapter text |
+| `document_get_page` | Get specific page content |
+| `document_compare` | Compare two documents on a topic |
+| `document_list` | List all ingested documents |
+| `book_study` | Study a book, extract all knowledge |
+| `book_study_status` | Live progress with ETA |
+| `book_study_jobs` | List all study jobs |
+| `book_list_studied` | List studied books |
+| `book_get_understanding` | Get full understanding |
+| `mentor_load_books` | Load books for mentor session |
+| `mentor_analyze` | Analyze scene against book knowledge |
+| `mentor_brainstorm` | Brainstorm using book principles |
+
+### Mentor Tools (4 tools)
+| Tool | Description |
+|------|-------------|
+| `mentor_check_rules` | Check if scene follows/violates rules |
+| `mentor_find_inspiration` | Find relevant examples from books |
+| `mentor_ask` | Ask what books say about a topic |
+| `mentor_compare` | Compare views across books |
+
+### Other Tools (4 tools)
+| Tool | Description |
+|------|-------------|
+| `knowledge_search` | Search knowledge graph |
+| `gmail_send_screenplay` | Email a screenplay |
+| `gmail_send_email` | Send a general email |
+| `voice_speak` | Synthesize and speak text |
+
+---
+
+## Memory System
+
+Friday uses a multi-layered memory architecture:
+
+| Layer | Purpose | Storage |
+|-------|---------|---------|
+| **Working Memory** | Current conversation context window | In-memory (token-counted) |
+| **Short-term Memory** | Recent facts, 7-day retention | SQLite |
+| **Long-term Memory** | Persistent memories with decay scoring | SQLite + vector embeddings |
+| **Knowledge Graph** | Entity relationships (NetworkX) | In-memory + serialized |
+| **Profile Store** | Persistent identity, version history | JSON files |
+| **Conversation Memory** | Turn management across sessions | SQLite |
+
+---
+
+## Docker Deployment (DGX Spark)
 
 ```bash
-# AWS Credentials
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-AWS_DEFAULT_REGION=us-east-1
+# Copy environment config
+cp .env.dgx.example .env
 
-# SageMaker IAM Role (create one with SageMaker permissions)
-SAGEMAKER_ROLE=arn:aws:iam::YOUR_ACCOUNT:role/service-role/AmazonSageMaker-ExecutionRole
+# Edit configuration
+# FRIDAY_LLM_BASE_URL, FRIDAY_LLM_MODEL, FRIDAY_LLM_BACKEND
 
-# HuggingFace Token (get from: https://huggingface.co/settings/tokens)
-HUGGINGFACE_TOKEN=hf_your_token_here
-
-# S3 Storage
-S3_BUCKET=your-training-bucket
-S3_PREFIX=friday-finetuning
+# Launch services
+docker compose -f docker-compose.dgx.yaml up -d
 ```
 
-### AWS Setup Checklist
-
-1. **SageMaker Role**: Create IAM role with these policies:
-
-   - `AmazonSageMakerFullAccess`
-   - `AmazonS3FullAccess` (or specific bucket access)
-
-2. **Instance Quotas**: Request limits for:
-
-   - `ml.g5.2xlarge` (single GPU): 1 instance
-   - `ml.g5.12xlarge` (4x GPU): 1 instance
-
-3. **HuggingFace Access**: Accept Meta Llama license at [meta-llama/Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct)
+Services: vLLM (port 8001), Orchestrator (port 8000), PostgreSQL, Redis, Qdrant.
 
 ---
 
-## 🎯 Training Options
+## Configuration
 
-### Option 1: Multi-GPU (Recommended)
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FRIDAY_LLM_BASE_URL` | `http://localhost:8001` | LLM inference endpoint |
+| `FRIDAY_LLM_MODEL` | `meta-llama/Meta-Llama-3.1-8B-Instruct` | Model name |
+| `FRIDAY_LLM_BACKEND` | `vllm` | Backend type (vllm/llamacpp) |
+| `FRIDAY_DEFAULT_PROJECT` | `aa-janta-naduma` | Default screenplay project |
+| `FRIDAY_PORT` | `8000` | Server port |
+| `FRIDAY_HOST` | `0.0.0.0` | Server host |
+| `DB_HOST` | `localhost` | PostgreSQL host |
+| `DB_PORT` | `5432` | PostgreSQL port |
+| `DB_NAME` | `vectordb` | Database name |
+| `QDRANT_URL` | - | Qdrant connection URL |
+
+---
+
+## Testing
 
 ```bash
-python scripts/train_multigpu.py
+# Run all tests
+python -m pytest tests/ -x -q
+
+# Run specific test file
+python -m pytest tests/test_orchestrator_core.py -v
+
+# Run with coverage
+python -m pytest tests/ --cov=orchestrator --cov=memory --cov=documents
 ```
 
-- **Instance**: ml.g5.12xlarge (4x A10G GPUs, 96GB total)
-- **Batch Size**: 8 effective (2 per device)
-- **Training Time**: ~4 minutes for 1 epoch
-- **Cost**: ~$2-3 for full training
+**59 test files | 5,939 tests | 5 skipped (need LLM backend) | ~13 seconds**
 
-### Option 2: Single GPU (Budget)
+---
+
+## Training Pipeline
+
+LoRA fine-tuning on AWS SageMaker for personality capture:
 
 ```bash
-python scripts/train_memory_diet.py
+# Set environment
+export MODEL_NAME=meta-llama/Meta-Llama-3.1-8B-Instruct
+
+# Launch training (~$3 on ml.g5.2xlarge)
+python src/training/vscode_sagemaker_trainer.py
 ```
 
-- **Instance**: ml.g5.2xlarge (1x A10G GPU, 24GB)
-- **Batch Size**: 1
-- **Training Time**: ~8-10 minutes for 1 epoch
-- **Cost**: ~$1 for full training
-
-### Option 3: Custom Training
-
-```python
-from scripts.vscode_sagemaker_trainer import VSCodeSageMakerTrainer
-
-trainer = VSCodeSageMakerTrainer()
-s3_inputs = trainer.upload_data()
-
-estimator, job_name = trainer.create_training_job(
-    s3_inputs,
-    epochs=2,
-    batch_size=4,
-    learning_rate=1e-4,
-    instance_type="ml.g5.2xlarge"
-)
-
-trainer.monitor_training(estimator, job_name)
-```
+**LoRA Config:** r=32, alpha=64, 3 epochs, lr=1e-4
 
 ---
 
-## 🧠 Model & Architecture
+## Documentation
 
-- **Base Model**: Meta-Llama-3.1-8B-Instruct
-- **Fine-tuning**: QLoRA (4-bit quantization + LoRA adapters)
-- **LoRA Config**: r=16, α=32, dropout=0.05
-- **Target Modules**: All attention & MLP layers
-- **Gradient Fix**: `enable_input_grads()` for LoRA+checkpointing compatibility
-
-### Key Technical Innovations
-
-- **Fixed gradient checkpointing** with LoRA (major breakthrough!)
-- **Smart memory management** with device_map="auto"
-- **Automatic padding** and sequence truncation
-- **Comprehensive validation** with fail-fast checks
+| Document | Description |
+|----------|-------------|
+| [PROJECT_STATUS.md](PROJECT_STATUS.md) | Detailed component status |
+| [docs/ARCHITECTURE_VISUAL.md](docs/ARCHITECTURE_VISUAL.md) | System architecture diagrams |
+| [docs/CONTEXT_WINDOW_MANAGEMENT.md](docs/CONTEXT_WINDOW_MANAGEMENT.md) | Working memory design |
+| [docs/TRAINING_METHODOLOGY.md](docs/TRAINING_METHODOLOGY.md) | Scientific training approach |
+| [docs/PHASE2_CONVERSATIONAL_DATA.md](docs/PHASE2_CONVERSATIONAL_DATA.md) | Phase 2 data collection guide |
+| [docs/research/](docs/research/) | Research notes (TTS, Telugu LoRA, vector DBs) |
 
 ---
 
-## 📊 Training Data
-
-### Current Dataset (`iteration1_train.labeled.jsonl`)
-
-- **Size**: 240+ examples
-- **Format**: ChatML (system/user/assistant)
-- **Domains**:
-  - Telugu film production knowledge
-  - Dialogue snippets with humor/sarcasm
-  - Scene summarization
-  - Personal assistant responses
-
-### Data Sources
-
-- `data/film/snippets/unplaced_dialogues.md` → Dialogue training
-- `data/clean_chunks/film/scenes/` → Scene understanding
-- `data/persona/` → Personal assistant behavior
-
----
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-**1. "Service quota exceeded"**
-
-```bash
-# Request quota increase in AWS Console
-# Go to: Service Quotas → Amazon SageMaker → Instance quotas
-```
-
-**2. "Module not found" errors**
-
-```bash
-pip install -r requirements.txt
-```
-
-**3. "Access denied" to model**
-
-```bash
-# 1. Accept license at HuggingFace
-# 2. Check HUGGINGFACE_TOKEN in .env
-```
-
-**4. Training fails with OOM**
-
-```bash
-# Use memory diet version
-python scripts/train_memory_diet.py
-```
-
-**5. "All labels are -100" error**
-
-```bash
-# Check data format - this is handled automatically now
-# Our latest code includes comprehensive validation
-```
-
----
-
-## 📈 Monitoring Training
-
-### Real-time Monitoring
-
-The training scripts automatically:
-
-- Upload data to S3
-- Start SageMaker job
-- Stream logs in real-time
-- Download trained model when complete
-
-### Key Metrics to Watch
-
-- **Loss**: Should decrease from ~3.0 → ~1.6
-- **Memory**: Should stay under GPU limits
-- **Training Speed**: ~30-40 seconds per 10 steps
-
-### Successful Training Example
-
-```
-Episode 1/1: 100%|████████| 30/30 [03:37<00:00]
-Train Loss: 1.634
-✅ Training completed successfully!
-📥 Downloading model artifacts...
-```
-
----
-
-## 🎪 Production Deployment
-
-### Download Trained Model
-
-```bash
-# Models are auto-downloaded to: models/trained/
-# Use with transformers + PEFT for inference
-```
-
-### Local Inference Example
-
-```python
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from peft import PeftModel
-
-# Load base model
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3.1-8B-Instruct")
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B-Instruct")
-
-# Load LoRA adapters
-model = PeftModel.from_pretrained(model, "models/trained/friday-lora-XXXXXX")
-
-# Chat with Friday
-messages = [
-    {"role": "system", "content": "You are Friday, a witty Telugu-English film assistant."},
-    {"role": "user", "content": "What's your favorite dialogue from Telugu cinema?"}
-]
-
-inputs = tokenizer.apply_chat_template(messages, return_tensors="pt")
-outputs = model.generate(inputs, max_new_tokens=100)
-response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-print(response)
-```
-
----
-
-## 🎯 Success Metrics
-
-Our fine-tuning system has achieved:
-
-- ✅ **100% Success Rate** with gradient checkpointing fix
-- ✅ **Sub-5 minute training** on multi-GPU
-- ✅ **Stable loss reduction** (3.0 → 1.6)
-- ✅ **Zero OOM errors** with proper memory management
-- ✅ **Production-ready pipeline** with full automation
-
----
-
-## 📚 Documentation
-
-- **[FINETUNING_CHRONICLES.md](FINETUNING_CHRONICLES.md)**: Complete technical journey with 16 episodes of failures, breakthroughs, and final success
-- **[docs/SAGEMAKER_GUIDE.md](docs/SAGEMAKER_GUIDE.md)**: Detailed SageMaker configuration guide
-- **[docs/domain_matrix.md](docs/domain_matrix.md)**: Training domains and data structure
-
----
-
-## 🤝 Contributing
-
-This is a personal JARVIS project, but the training pipeline is production-ready and can be adapted for other use cases.
-
-### Key Scripts to Understand
-
-1. `scripts/train_multigpu.py` - Entry point for training
-2. `scripts/vscode_sagemaker_trainer.py` - Core orchestration
-3. `scripts/train/sagemaker_train.py` - The actual training engine
-
----
-
-## 📄 License
+## License
 
 Personal use project. Training pipeline architecture can be adapted with attribution.
-
----
-
-## 🎬 Credits
-
-Built with determination, Telugu cinema inspiration, and way too much coffee. Special thanks to the Meta AI team for Llama 3.1 and the HuggingFace team for making fine-tuning accessible.
-
-**"Daddy's home!"** - Friday AI's wake phrase 🚀

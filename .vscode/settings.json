@@ -5,19 +5,88 @@
   "python-envs.defaultEnvManager": "ms-python.python:conda",
   "python-envs.defaultPackageManager": "ms-python.python:conda",
   "python-envs.pythonProjects": [],
-  
+
   // AWS & SageMaker Configuration
   "aws.region": "us-east-1",
   "jupyter.jupyterServerType": "local",
-  
+
   // SageMaker specific settings
   "aws.sagemaker.defaultS3Bucket": "friday-ai-training",
-  
+
   // Environment variables
   "python.terminal.activateEnvironment": true,
   "python.envFile": "${workspaceFolder}/.env",
-  
+
   // Auto-save for better workflow
   "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 1000
+  "files.autoSaveDelay": 1000,
+
+  // ============================================
+  // Todo Tree Configuration
+  // ============================================
+  "todo-tree.general.tags": [
+    "TODO",
+    "FIXME",
+    "HACK",
+    "BUG",
+    "DONE",
+    "NEXT",
+    "BLOCKED",
+    "REVIEW"
+  ],
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "checklist",
+      "foreground": "#fff",
+      "background": "#ffbd2e",
+      "iconColour": "#ffbd2e"
+    },
+    "FIXME": {
+      "icon": "alert",
+      "foreground": "#fff",
+      "background": "#f14c4c",
+      "iconColour": "#f14c4c"
+    },
+    "DONE": {
+      "icon": "check",
+      "foreground": "#fff",
+      "background": "#89d185",
+      "iconColour": "#89d185"
+    },
+    "NEXT": {
+      "icon": "arrow-right",
+      "foreground": "#fff",
+      "background": "#6bb3f8",
+      "iconColour": "#6bb3f8"
+    },
+    "BLOCKED": {
+      "icon": "stop",
+      "foreground": "#fff",
+      "background": "#9c4040",
+      "iconColour": "#9c4040"
+    },
+    "REVIEW": {
+      "icon": "eye",
+      "foreground": "#fff",
+      "background": "#c586c0",
+      "iconColour": "#c586c0"
+    }
+  },
+  "todo-tree.general.statusBar": "tags",
+  "todo-tree.tree.showCountsInTree": true,
+  "todo-tree.filtering.excludeGlobs": [
+    "**/node_modules/**",
+    "**/env/**",
+    "**/.git/**"
+  ],
+
+  // ============================================
+  // Draw.io Configuration
+  // ============================================
+  "hediet.vscode-drawio.theme": "Kennedy",
+
+  // ============================================
+  // Mermaid Preview
+  // ============================================
+  "markdown.mermaid.theme": "default"
 }

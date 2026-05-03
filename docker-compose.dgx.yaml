@@ -1,0 +1,193 @@
+# Friday AI - DGX Spark Deployment
+# ==================================
+# Full stack for NVIDIA DGX Spark (Grace Blackwell, 128GB unified memory)
+#
+# Services:
+#   - friday:    FastAPI orchestrator (port 8000)
+#   - vllm:      LLM inference server (port 8001)
+#   - postgres:  Database (port 5432)
+#   - redis:     Working memory cache (port 6379)
+#   - qdrant:    Vector search (port 6333)
+#
+# Usage:
+#   cp .env.dgx.example .env.dgx
+#   # Edit .env.dgx with your tokens/passwords
+#   docker compose -f docker-compose.dgx.yaml --env-file .env.dgx up -d
+#
+# DGX Spark notes:
+#   - ARM64 architecture (Grace CPU) → all images must support arm64/aarch64
+#   - Blackwell GPU → CUDA 12.8+ recommended
+#   - 128GB unified memory → can load 70B+ models
+
+services:
+  # ===========================================================================
+  # PostgreSQL - Main database
+  # ===========================================================================
+  postgres:
+    image: postgres:16-bookworm
+    container_name: friday-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-friday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.dgx}
+      POSTGRES_DB: ${POSTGRES_DB:-friday}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U friday"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================================================
+  # Redis - Working memory / caching
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: friday-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 2gb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================================================
+  # Qdrant - Vector database for embeddings
+  # ===========================================================================
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: friday-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"  # REST API
+      - "6334:6334"  # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================================================
+  # vLLM - LLM inference server (GPU)
+  # ===========================================================================
+  # Uses NVIDIA GPU for LLaMA 8B + LoRA adapters
+  # DGX Spark: Blackwell GPU with 128GB unified memory
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: friday-vllm
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      HUGGING_FACE_HUB_TOKEN: ${HUGGINGFACE_TOKEN:?Set HUGGINGFACE_TOKEN in .env.dgx}
+    command: >
+      --model ${LLM_MODEL:-meta-llama/Meta-Llama-3.1-8B-Instruct}
+      --host 0.0.0.0
+      --port 8001
+      --max-model-len 4096
+      --gpu-memory-utilization 0.4
+      --enable-lora
+      --max-loras 2
+      --max-lora-rank 32
+      --dtype auto
+      --trust-remote-code
+    ports:
+      - "8001:8001"
+    volumes:
+      - model_cache:/root/.cache/huggingface
+      - ./models/trained:/models/lora:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s  # Model loading takes time
+      retries: 5
+
+  # ===========================================================================
+  # Friday Orchestrator - Main application (FastAPI)
+  # ===========================================================================
+  friday:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: friday-orchestrator
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      vllm:
+        condition: service_healthy
+    environment:
+      # Core
+      FRIDAY_MODE: server
+      FRIDAY_HOST: "0.0.0.0"
+      FRIDAY_PORT: "8000"
+
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-friday}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-friday}
+
+      # Redis
+      REDIS_URL: redis://redis:6379/0
+
+      # Vector DB
+      QDRANT_URL: http://qdrant:6333
+
+      # LLM inference (vLLM OpenAI-compatible API)
+      FRIDAY_LLM_BASE_URL: http://vllm:8001/v1
+      FRIDAY_LLM_MODEL: ${LLM_MODEL:-meta-llama/Meta-Llama-3.1-8B-Instruct}
+      FRIDAY_LLM_BACKEND: vllm
+
+      # HuggingFace (for embedding models)
+      HUGGINGFACE_TOKEN: ${HUGGINGFACE_TOKEN}
+
+      # Router (GLM-4.7-Flash)
+      ROUTER_PROVIDER: ${ROUTER_PROVIDER:-zhipu}
+      ROUTER_API_KEY: ${ROUTER_API_KEY:-}
+      ROUTER_ENABLED: ${ROUTER_ENABLED:-false}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models:ro
+      - ./config:/app/config:ro
+      - friday_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; r = httpx.get('http://localhost:8000/health'); r.raise_for_status()"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  qdrant_data:
+    driver: local
+  model_cache:
+    driver: local
+  friday_logs:
+    driver: local
